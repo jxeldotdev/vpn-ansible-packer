@@ -1,0 +1,11 @@
+[Unit]
+Description=Backup mongodb each night
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/mongodb-backup.sh
+User=ansible
+Group=ansible
+
+[Install]
+WantedBy=multi-user.target

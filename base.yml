@@ -1,0 +1,69 @@
+---
+- name: Base CentOS 8 configuration
+  hosts: all
+  vars:
+    sshd_port: 2048
+  remote_user: ansible
+  become: true
+
+  tasks:
+    - name: Install base packages
+      yum:
+        name:
+          - epel-release
+          - gpg
+          - tmux
+          - sudo
+          - wget
+          - selinux
+          - firewalld
+          
+    - name: Create a user for Ansible
+      user:
+        name: ansible
+        shell: /bin/bash
+        groups: wheel
+
+    - name: Make sure ansible user has my ssh keys added to it
+
+    - name: Make sure selinux is enabled and running
+      block:
+        - service:
+            name: selinux
+            state: running
+            enabled: true
+        - selinux:
+            policy: targeted
+            state: enforcing
+ 
+    - name: Update sshd config
+      template:
+        src: templates/sshd_config.j2
+      notify:
+        - update selinux ssh port
+        - restart sshd
+            
+    - name: Setup firewalld
+      block:
+        - service:
+            name: firewalld
+            state: running
+            enabled: true
+        - firewalld:
+            zone: public
+            permanent: yes
+            state: enabled
+        - firewalld:
+            service: ssh
+            port: {{ sshd_port }}
+            permanent: yes
+            state: enabled    
+
+  handlers:
+    - name: update selinux ssh port
+      command:
+        cmd: semanage port -a -t ssh_port_t -p tcp {{ sshd_port }}
+    - name: restart sshd
+      service:
+        name: sshd
+        state: restarted

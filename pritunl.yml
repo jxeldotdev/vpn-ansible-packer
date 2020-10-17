@@ -1,0 +1,77 @@
+---
+
+- name: Setup Pritunl VPN
+  hosts: vpn
+  remote_user: ansible
+  become: yes
+  vars:
+    vpn_port: 4200
+
+  tasks:
+  - name: Install EPEL & other packages
+    yum:
+      name:
+        - epel-release
+        - gpg
+      state: present
+
+  - name: Import RPM keys
+    command:
+      cmd: |
+        gpg --keyserver hkp://keyserver.ubuntu.com --recv-keys 7568D9BB55FF9E5287D586017AE645C0CF8E292A;
+        gpg --armor --export 7568D9BB55FF9E5287D586017AE645C0CF8E292A > key.tmp; sudo rpm --import key.tmp; rm -f key.tmp
+      creates: /etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-8
+    
+  - name: Setup MongoDB
+    block:
+      - name: Add mongodb repo
+        template:
+          src: templates/mongodb-org-4.2.repo
+          dest: /etc/yum.repos.d/mongodb-org-4.2.repo
+
+      - name: Install mongodb
+        yum:
+          name: mongodb-org
+          state: present
+
+      - name: Enable and start mongodb
+        service:
+          name: mongod
+          state: started
+          enabled: yes
+
+  - name: Setup Pritunl
+    block:
+      - name: Add pritunl repo
+        template:
+          src: templates/pritunl.repo
+          dest: /etc/yum.repos.d/pritunl.repo
+
+      - name: Install pritunl
+        yum:
+          name: pritunl
+          state: present
+
+      - name: Enable and start service
+        service:
+          name: pritunl
+          state: started
+          enabled: yes
+  
+  - name: Configure firewalld
+    block:
+      - firewalld:
+          service: https
+          state: enabled
+          permanent: yes
+      
+
+      - firewalld:
+          service: http
+          state: enabled
+          permanent: yes
+
+      - firewalld:
+          port: {{ vpn_port }}
+          state: enabled
+          permanent: yes

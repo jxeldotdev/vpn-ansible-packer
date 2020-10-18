@@ -39,6 +39,36 @@
           name: mongod
           state: started
           enabled: yes
+      
+      - name: Copy mongodb-backup systemd unit
+        copy:
+          src: templates/mongodb-backup.unit
+          dest: /etc/systemd/system/
+          permissions: '0600'
+          owner: root
+          group: root
+          
+      - name: Copy mongodb-backup systemd timer
+        copy:
+          src: templates/mongodb-backup.timer
+          dest: /etc/systemd/system/
+          owner: root
+          group: root
+          permissions: '0600'
+
+      - name: Copy mongodb backup script
+        copy:
+          src: templates/mongodb-backup.sh
+          dest: /usr/local/bin/mongodb-backup
+          permissions: '0755'
+          owner: root
+          group: root
+
+      - name: Enable mongodb-backup systemd timer
+        systemd:
+          name: mongodb-backup.timer
+          state: started
+          enabled: yes
 
   - name: Setup Pritunl
     block:
@@ -57,14 +87,21 @@
           name: pritunl
           state: started
           enabled: yes
-  
+
+      - blockinfile:
+        path: /etc/security/limits.conf
+        block: |
+          * hard nofile 64000
+          * soft nofile 64000
+          root hard nofile 64000
+          root soft nofile 64000
+
   - name: Configure firewalld
     block:
       - firewalld:
           service: https
           state: enabled
           permanent: yes
-      
 
       - firewalld:
           service: http

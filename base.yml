@@ -3,6 +3,9 @@
   hosts: all
   vars:
     sshd_port: 2048
+    sshd_fw_port: "2048/tcp"
+    github_keys: https://github.com/joelfreemanxyz.keys
+
   remote_user: ansible
   become: true
 
@@ -15,7 +18,6 @@
           - tmux
           - sudo
           - wget
-          - selinux
           - firewalld
           
     - name: Create a user for Ansible
@@ -23,47 +25,62 @@
         name: ansible
         shell: /bin/bash
         groups: wheel
+        append: yes
 
     - name: Make sure ansible user has my ssh keys added to it
+      authorized_key:
+        user: ansible
+        state: present
+        key: "{{ github_keys }}"
 
-    - name: Make sure selinux is enabled and running
-      block:
-        - service:
-            name: selinux
-            state: running
-            enabled: true
-        - selinux:
-            policy: targeted
-            state: enforcing
- 
-    - name: Update sshd config
-      template:
-        src: templates/sshd_config.j2
-      notify:
-        - update selinux ssh port
-        - restart sshd
-            
+    - name: Make sure selinux is enforcing
+      selinux:
+        policy: targeted
+        state: enforcing
+
     - name: Setup firewalld
       block:
         - service:
             name: firewalld
-            state: running
+            state: started
             enabled: true
-        - firewalld:
+        - ansible.posix.firewalld:
             zone: public
             permanent: yes
             state: enabled
-        - firewalld:
-            service: ssh
-            port: {{ sshd_port }}
+        - ansible.posix.firewalld:
+            port: "{{ sshd_fw_port }}"
             permanent: yes
             state: enabled    
+
+    - name: Update sshd config
+      template:
+        src: templates/sshd_config.j2
+        dest: /etc/ssh/sshd_config
+        owner: root
+        group: root
+        mode: '0644'
+      notify:
+        - update selinux ssh port
+        - restart sshd
+        - disable port 22 ssh
+
+    - name: Restart firewalld
+      service:
+        name: firewalld
+        state: restarted
 
   handlers:
     - name: update selinux ssh port
       command:
-        cmd: semanage port -a -t ssh_port_t -p tcp {{ sshd_port }}
+        cmd: semanage port -a -t ssh_port_t -p tcp "{{ sshd_port }}"
     - name: restart sshd
       service:
         name: sshd
         state: restarted
+
+    - name: disable port 22 ssh
+      ansible.posix.firewalld:
+            service: ssh
+            permanent: yes
+            state: disabled

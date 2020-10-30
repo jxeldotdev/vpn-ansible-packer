@@ -6,66 +6,66 @@
   become: yes
   vars:
     vpn_port: 4200
+    mongodb_uri: "mongodb://localhost:27017/pritunl"
 
   tasks:
   - name: Install EPEL & other packages
-    yum:
+    ansible.builtin.yum:
       name:
-        - epel-release
+        - https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
         - gpg
       state: present
 
   - name: Import RPM keys
-    command:
+    ansible.builtin.shell:
       cmd: |
         gpg --keyserver hkp://keyserver.ubuntu.com --recv-keys 7568D9BB55FF9E5287D586017AE645C0CF8E292A;
         gpg --armor --export 7568D9BB55FF9E5287D586017AE645C0CF8E292A > key.tmp; sudo rpm --import key.tmp; rm -f key.tmp
-      creates: /etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-8
     
   - name: Setup MongoDB
     block:
       - name: Add mongodb repo
-        template:
+        ansible.builtin.template:
           src: templates/mongodb-org-4.2.repo
           dest: /etc/yum.repos.d/mongodb-org-4.2.repo
 
       - name: Install mongodb
-        yum:
+        ansible.builtin.yum:
           name: mongodb-org
           state: present
 
       - name: Enable and start mongodb
-        service:
+        ansible.builtin.service:
           name: mongod
           state: started
           enabled: yes
       
       - name: Copy mongodb-backup systemd unit
-        copy:
-          src: templates/mongodb-backup.unit
+        ansible.builtin.copy:
+          src: templates/mongodb-backup.service
           dest: /etc/systemd/system/
-          permissions: '0600'
+          mode: '0600'
           owner: root
           group: root
           
       - name: Copy mongodb-backup systemd timer
-        copy:
+        ansible.builtin.copy:
           src: templates/mongodb-backup.timer
           dest: /etc/systemd/system/
           owner: root
           group: root
-          permissions: '0600'
+          mode: '0600'
 
       - name: Copy mongodb backup script
-        copy:
+        ansible.builtin.copy:
           src: templates/mongodb-backup.sh
           dest: /usr/local/bin/mongodb-backup
-          permissions: '0755'
+          mode: '0755'
           owner: root
           group: root
 
       - name: Enable mongodb-backup systemd timer
-        systemd:
+        ansible.builtin.systemd:
           name: mongodb-backup.timer
           state: started
           enabled: yes
@@ -73,42 +73,48 @@
   - name: Setup Pritunl
     block:
       - name: Add pritunl repo
-        template:
+        ansible.builtin.template:
           src: templates/pritunl.repo
           dest: /etc/yum.repos.d/pritunl.repo
 
       - name: Install pritunl
-        yum:
+        ansible.builtin.yum:
           name: pritunl
           state: present
 
       - name: Enable and start service
-        service:
+        ansible.builtin.service:
           name: pritunl
           state: started
           enabled: yes
 
-      - blockinfile:
-        path: /etc/security/limits.conf
-        block: |
-          * hard nofile 64000
-          * soft nofile 64000
-          root hard nofile 64000
-          root soft nofile 64000
+      - name: Update open file limits
+        ansible.builtin.blockinfile:
+          path: /etc/security/limits.conf
+          block: |
+            * hard nofile 64000
+            * soft nofile 64000
+            root hard nofile 64000
+            root soft nofile 64000
 
+      - name: Configure Pritunl URI
+        ansible.builtin.shell:
+          cmd: pritunl set-mongodb {{ mongodb_uri }}
+        run_once: true
+      
   - name: Configure firewalld
     block:
-      - firewalld:
+      - ansible.posix.firewalld:
           service: https
           state: enabled
           permanent: yes
 
-      - firewalld:
+      - ansible.posix.firewalld:
           service: http
           state: enabled
           permanent: yes
 
-      - firewalld:
-          port: {{ vpn_port }}
+      - ansible.posix.firewalld:
+          port: "{{ vpn_port }}/udp"
           state: enabled
           permanent: yes

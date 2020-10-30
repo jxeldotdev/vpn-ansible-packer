@@ -3,7 +3,7 @@ Description=Backup mongodb each night
 
 [Service]
 Type=oneshot
-ExecStart=/usr/local/bin/mongodb-backup.sh
+ExecStart=/usr/local/bin/mongodb-backup
 User=ansible
 Group=ansible
 

@@ -1,2 +1,2 @@
 [vpn]
-35.189.25.149
+35.244.91.178 ansible_port=2048 ansible_ssh_key=~/.ssh/id_ecdsa

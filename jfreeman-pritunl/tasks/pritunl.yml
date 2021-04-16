@@ -1,0 +1,34 @@
+---
+- name: Add pritunl repo
+  ansible.builtin.template:
+    src: templates/pritunl.repo
+    dest: /etc/yum.repos.d/pritunl.repo
+
+- name: Install pritunl
+  ansible.builtin.yum:
+    name: pritunl
+    state: present
+
+- name: Enable and start service
+  ansible.builtin.service:
+    name: pritunl
+    state: started
+    enabled: yes
+
+- name: Update open file limits
+  ansible.builtin.blockinfile:
+    path: /etc/security/limits.conf
+    block: |
+      * hard nofile 64000
+      * soft nofile 64000
+      root hard nofile 64000
+      root soft nofile 64000
+
+- name: Configure Pritunl URI
+  ansible.builtin.shell:
+    cmd: pritunl set-mongodb {{ mongodb_uri }}
+  run_once: true
+
+- name: Configure Pritunl Web UI port
+  ansible.builtin.shell:
+    cmd: pritunl set app.server_port {{ pritunl_web_port }}

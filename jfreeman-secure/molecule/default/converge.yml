@@ -1,0 +1,7 @@
+---
+- name: Converge
+  hosts: all
+  tasks:
+    - name: "Include jfreeman-secure"
+      include_role:
+        name: "jfreeman-secure"

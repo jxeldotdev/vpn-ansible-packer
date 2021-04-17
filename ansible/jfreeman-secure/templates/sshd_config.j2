@@ -1,0 +1,79 @@
+#       $OpenBSD: sshd_config,v 1.103 2018/04/09 20:41:22 tj Exp $
+
+# This is the sshd server system-wide configuration file.  See
+# sshd_config(5) for more information.
+
+# This sshd was compiled with PATH=/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin
+
+# The strategy used for options in the default sshd_config shipped with
+# OpenSSH is to specify options with their default value where
+# possible, but leave them commented.  Uncommented options override the
+# default value.
+
+# If you want to change the port on a SELinux system, you have to tell
+# SELinux about this change.
+# semanage port -a -t ssh_port_t -p tcp #PORTNUMBER
+#
+Port {{ sshd_port }}
+#AddressFamily any
+#ListenAddress 0.0.0.0
+#ListenAddress ::
+
+HostKey /etc/ssh/ssh_host_rsa_key
+HostKey /etc/ssh/ssh_host_ecdsa_key
+HostKey /etc/ssh/ssh_host_ed25519_key
+
+# Ciphers and keying
+#RekeyLimit default none
+
+# System-wide Crypto policy:
+# This system is following system-wide crypto policy. The changes to
+# Ciphers, MACs, KexAlgoritms and GSSAPIKexAlgorithsm will not have any
+# effect here. They will be overridden by command-line options passed on
+# the server start up.
+# To opt out, uncomment a line with redefinition of  CRYPTO_POLICY=
+# variable in  /etc/sysconfig/sshd  to overwrite the policy.
+# For more information, see manual page for update-crypto-policies(8).
+
+# Logging
+SyslogFacility AUTHPRIV
+
+# Authentication:
+PermitRootLogin no
+AuthorizedKeysFile      .ssh/authorized_keys
+PasswordAuthentication no
+ChallengeResponseAuthentication no
+
+# GSSAPI options
+GSSAPIAuthentication yes
+GSSAPICleanupCredentials no
+#GSSAPIStrictAcceptorCheck yes
+#GSSAPIKeyExchange no
+#GSSAPIEnablek5users no
+
+UsePAM yes
+X11Forwarding no
+PrintMotd no
+
+#PrintLastLog yes
+#TCPKeepAlive yes
+#PermitUserEnvironment no
+#Compression delayed
+ClientAliveInterval 420
+#ClientAliveCountMax 3
+#UseDNS no
+#PidFile /var/run/sshd.pid
+#MaxStartups 10:30:100
+#PermitTunnel no
+#ChrootDirectory none
+#VersionAddendum none
+
+
+# Accept locale-related environment variables
+AcceptEnv LANG LC_CTYPE LC_NUMERIC LC_TIME LC_COLLATE LC_MONETARY LC_MESSAGES
+AcceptEnv LC_PAPER LC_NAME LC_ADDRESS LC_TELEPHONE LC_MEASUREMENT
+AcceptEnv LC_IDENTIFICATION LC_ALL LANGUAGE
+AcceptEnv XMODIFIERS
+
+# override default of no subsystems
+Subsystem       sftp    /usr/libexec/openssh/sftp-server

@@ -1,0 +1,16 @@
+---
+
+- name: Base RHEL8 Configuration
+  hosts: all
+  # remote_user is ignored by packer, set for when running manually.
+  remote_user: ec2-user
+  become_method: sudo
+  become: true
+  vars:
+    sshd_port: 2048
+    github_keys: https://github.com/jxeldotdev.keys
+    ansible_user_name: jfreeman
+    running_locally: false
+    # vault_redhat_org_id, vault_redhat_activation_key and ansible_user_pasword are in vault
+  roles:
+    - './jfreeman-secure/'

@@ -1,0 +1,4 @@
+---
+# defaults file for jfreeman-pritunl
+pritunl_web_port: 8080
+vpn_port: 6823

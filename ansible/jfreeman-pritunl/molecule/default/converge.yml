@@ -1,0 +1,7 @@
+---
+- name: Converge
+  hosts: all
+  tasks:
+    - name: "Include jfreeman-pritunl"
+      include_role:
+        name: "jfreeman-pritunl"

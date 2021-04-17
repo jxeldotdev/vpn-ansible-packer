@@ -1,0 +1,6 @@
+---
+# vars file for jfreeman-secure
+
+ansible_user_password: {{ vault_ansible_user_password }}
+redhat_org_id: {{ vault_redhat_org_id }}
+redhat_activation_key: {{ vault_redhat_activation_key }}

@@ -40,8 +40,9 @@
   ansible.builtin.user:
     name: "{{ ansible_user_name }}"
     shell: /bin/bash
-    groups: ansible, adm, wheel
-    append: no
+    password: "{{ ansible_user_password }}"
+    groups: adm, wheel
+    append: yes
 
 - name: Add SSH Keys to Ansible user
   ansible.posix.authorized_key:
@@ -52,7 +53,7 @@
 - name: Install packages & Debugging tools
   ansible.builtin.package:
     name: "{{ item }}"
-  loop:
+  with_items: 
     - epel-release
     - gpg
     - tmux
@@ -86,8 +87,6 @@
       owner: root
       group: root
       mode: '0644'
-    notify:
-      - restart sshd
 
   - name: Configure SSH Port for SELinux
     community.general.seport:
@@ -107,6 +106,8 @@
     ansible.builtin.service:
       name: sshd
       state: reloaded
+  
+  - name: Set SSHD Port
   
   - name: Block port 22 SSH
     ansible.posix.firewalld:

@@ -13,4 +13,4 @@
     running_locally: false
     # vault_redhat_org_id, vault_redhat_activation_key and ansible_user_pasword are in vault
   roles:
-    - './jfreeman-secure/'
+    - './jfreeman-pritunl/'

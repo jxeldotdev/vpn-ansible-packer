@@ -23,7 +23,7 @@ class PackerSecurityGroup:
 
         try:
             publicIp = http.request('GET', 'http://ipinfo.io/ip')
-            publicIp = publicIp.data
+            publicIp = publicIp.data.decode('UTF-8')
             try:
                 ipaddress.ip_address(publicIp)
             except ValueError as e:
@@ -52,7 +52,8 @@ class PackerSecurityGroup:
             ],
         )
 
-        vpcId = vpcs['Vpcs'][0].VpcID
+        vpcs = vpcs['Vpcs'][0]
+        vpcId = vpcs['VpcId']
 
         return vpcId
 
@@ -62,7 +63,7 @@ class PackerSecurityGroup:
         Create temporary security group for Packer and authorize ingress SSH
         """
 
-        sgName = "packer-temporary-{}".format(strftime("%D-%H-%M"))
+        sgName = "packer-temporary-{}".format(strftime("%D-%H"))
         try:
 
             resp = client.create_security_group(
@@ -84,20 +85,20 @@ class PackerSecurityGroup:
                 'IpProtocol': 'tcp',
                 'FromPort': 22,
                 'ToPort': 22,
-                'IP': [{'CidrIp': ip}]
+                'IpRanges': [{'CidrIp': ip}]
             },
             {
                 'IpProtocol': 'tcp',
                 'FromPort': additionalPort,
                 'ToPort': additionalPort,
-                'IP': [{'CidrIp': ip}],
+                'IpRanges': [{'CidrIp': ip}],
             },
         ]
 
         tags = [
             {
                 'Key': 'Class',
-                'Value': 'packer'
+                'Value': 'CustomPackerGroup'
             }
         ]
 
@@ -126,6 +127,7 @@ class PackerSecurityGroup:
         """
         
         # Read group ID from JSON file
+        print("Reading Security Group info from .group.json")
         try:
             with open('.group.json') as json_file:
                 data = json.load(json_file)
@@ -153,6 +155,8 @@ class PackerSecurityGroup:
             except ClientError as e:
                 print("Unable to find security group\n", e)
 
+        print("Deleting security group {}".format(sgId))
+
         try:
             client.delete_security_group(GroupId=sgId)
         except ClientError as e:
@@ -167,13 +171,15 @@ def main():
         if sys.argv[1] == "delete".lower():
             try:
                 param = sys.argv[2]
-            except IndexError:
+            except IndexError as e:
                 PackerSecurityGroup.delete()
             else:
                 PackerSecurityGroup.delete(param)
         elif sys.argv[1] == "create":
             print("Creating security group for packer")
-            PackerSecurityGroup.create()
+            vpcId = PackerSecurityGroup.get_default_vpc(client)
+            PackerSecurityGroup.create(vpcId)
+
     except IndexError:
         print("Utility to create TEMPORARY security groups for Packer with correct ports open for SSH")
         print("USAGE:")

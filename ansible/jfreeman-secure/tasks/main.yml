@@ -63,6 +63,8 @@
     - strace
     - htop
     - lsof
+    - glances
+    - sysstat
     - atop
     - iotop
     - tcpdump
@@ -76,6 +78,29 @@
   ansible.builtin.package:
     name: '*'
     state: latest
+
+- name: Set SELinux to Enforcing mode
+  ansible.posix.selinux:
+    policy: targeted
+    state: enforcing
+
+- name: Start and Enable Firewalld
+  block:
+    - ansible.builtin.service:
+        name: firewalld
+        state: started
+        enabled: true
+    - ansible.posix.firewalld:
+        zone: public
+        permanent: yes
+        state: enabled
+
+- name: Configure RedHat Subscription
+  community.general.redhat_subscription:
+    state: present
+    org_id: "{{ redhat_org_id }}"
+    activationkey: "{{ redhat_activation_key }}"
+    auto_attach: true
 
 # Security by obscurity :)
 - name: Configure SSHD
@@ -106,34 +131,19 @@
     ansible.builtin.service:
       name: sshd
       state: reloaded
-  
+
   - name: Set SSHD Port
+    ansible.builtin.set_fact:
+      ansible_port: "{{ sshd_port }}"
+
+  - name: Block port 22 SSH
+    ansible.posix.firewalld:
+      port: 22/tcp
+      state: disabled
+      immedate: yes 
   
   - name: Block port 22 SSH
     ansible.posix.firewalld:
       port: 22/tcp
       state: disabled
       immedate: yes 
-
-- name: Set SELinux to Enforcing mode
-  ansible.posix.selinux:
-    policy: targeted
-    state: enforcing
-
-- name: Start and Enable Firewalld
-  block:
-    - ansible.builtin.service:
-        name: firewalld
-        state: started
-        enabled: true
-    - ansible.posix.firewalld:
-        zone: public
-        permanent: yes
-        state: enabled
-
-- name: Configure RedHat Subscription
-  community.general.redhat_subscription:
-    state: present
-    org_id: "{{ redhat_org_id }}"
-    activationkey: "{{ redhat_activation_key }}"
-    auto_attach: true

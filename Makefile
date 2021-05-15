@@ -1,21 +1,12 @@
-.PHONY:
-base-ami:
-	pipenv run python ./packer/helpers.py create
-	packer build packer/packer-rhel8-secure.pkr.hcl
-	pipenv run python ./packer/helpers.py delete
+base-ami: securitygroup
+	packer build -var sg_id=$(shell jq '.GroupId' .group.json) packer/packer-rhel8-secure.pkr.hcl
+	$(MAKE) clean
 
-.PHONY:
 pritunl-ami:
-	pipenv run python ./helpers/securitygroup.py create
 	packer build packer/packer-rhel8-pritunl.pkr.hcl
+
+securitygroup:
+	pipenv run python ./helpers/securitygroup.py create
+
+clean:
 	pipenv run python ./helpers/securitygroup.py delete
-
-
-.PHONY:
-test-secure-role:
-	exit 1
-
-
-.PHONY:
-test-pritunl-role:
-	exit 1

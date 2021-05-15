@@ -1,2 +1,5 @@
 vault.yml
+vault-password
+.env
+.group.json
 .vscode

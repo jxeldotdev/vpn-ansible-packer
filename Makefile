@@ -1,12 +1,11 @@
-base-ami: securitygroup
-	packer build -var sg_id=$(shell jq '.GroupId' .group.json) packer/packer-rhel8-secure.pkr.hcl
-	$(MAKE) clean
+base-ami: 
+	packer build \
+	-var vault_pw_file_path=$(PWD)/ansible/vault-password \
+	-var vault_path=$(PWD)/ansible/vault.yml \
+	packer/packer-rhel8-secure.pkr.hcl 
 
 pritunl-ami:
-	packer build packer/packer-rhel8-pritunl.pkr.hcl
-
-securitygroup:
-	pipenv run python ./helpers/securitygroup.py create
-
-clean:
-	pipenv run python ./helpers/securitygroup.py delete
+	packer build \
+	-var ssh_username="jfreeman" \
+	-var ssh_port=2048 \
+	packer/packer-rhel8-pritunl.pkr.hcl

@@ -1,0 +1,21 @@
+---
+- name: Install Packages
+  block:
+    - name: Install EPEL RPM Key
+      ansible.builtin.rpm_key:
+        state: present
+        key: https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-8
+      
+    - name: Install EPEL
+      ansible.builtin.dnf:
+        name: https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
+
+    - name: Update Packages
+      ansible.builtin.package:
+        name: '*'
+        state: latest
+
+    - name: Install packages & Debugging tools
+      ansible.builtin.dnf:
+        name: "{{ utility_packages }}"
+        state: latest

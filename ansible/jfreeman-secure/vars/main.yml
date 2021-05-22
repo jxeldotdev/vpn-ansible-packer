@@ -4,3 +4,24 @@
 ansible_user_password: "{{ vault_ansible_user_password }}"
 redhat_org_id: "{{ vault_redhat_org_id }}"
 redhat_activation_key: "{{ vault_redhat_activation_key }}"
+
+utility_packages:
+  - gpg
+  - tmux
+  - sudo
+  - wget
+  - firewalld
+  - strace
+  - htop
+  - lsof
+  - glances
+  - sysstat
+  - atop
+  - iotop
+  - tcpdump
+  - bind-utils
+  - vim
+  - mtr
+  - subscription-manager
+  - policycoreutils-python-utils
+  - logrotate

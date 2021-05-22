@@ -1,0 +1,13 @@
+---
+- name: Remove EC2 User
+  remote_user: jfreeman
+  become_method: sudo
+  become: yes
+  var_files:
+    - vault.yml
+  tasks:
+    - name: Remove ec2-user 
+      ansible.builtin.user:
+        name: ec2-user
+        state: absent
+        remove: yes

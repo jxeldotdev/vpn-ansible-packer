@@ -1,16 +1,15 @@
 ---
 
-- name: Base RHEL8 Configuration
+- name: Install and configure Pritunl VPN
   hosts: all
   # remote_user is ignored by packer, set for when running manually.
-  remote_user: ec2-user
+  remote_user: jfreeman
   become_method: sudo
   become: true
+  var_files:
+    - vault.yml
   vars:
-    sshd_port: 2048
-    github_keys: https://github.com/jxeldotdev.keys
-    ansible_user_name: jfreeman
-    running_locally: false
-    # vault_redhat_org_id, vault_redhat_activation_key and ansible_user_pasword are in vault
+    - setup_firwalld: no
+    - configure_mongodb_backups: no
   roles:
     - './jfreeman-pritunl/'

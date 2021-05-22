@@ -1,20 +1,18 @@
-variable "sg_id" {
+variable "vault_pw_file_path" {
+  type = string
+}
+
+variable "vault_path" {
   type = string
 }
 
 source "amazon-ebs" "rhel8" {
-  source_ami    = "ami-0a963156d94c557a8"
+  source_ami    = "ami-01ae9b7a0d2d87a64"
   region        = "ap-southeast-2"
   instance_type = "t2.micro"
   ssh_username  = "ec2-user"
-  ami_name      = "packer-rhel8.3-base-{{timestamp}}"
-  security_group_id = var.sg_id
-
-  security_group_filter {
-    filters = {
-      "tag:Class": "CustomPackerGroup"
-    }
-  }
+  ami_name      = "packer-rhel8.4-base-{{timestamp}}"
+  ssh_port       = 22
 }
 
 build {
@@ -22,6 +20,11 @@ build {
 
   provisioner "ansible" {
     playbook_file = "./ansible/base.yml"
-    extra_arguments = [ "--vault-password-file=./ansible/vault-password" ]
+    extra_arguments = [ "--vault-password-file=${var.vault_pw_file_path}", "-e @${var.vault_path}" ]
+  }
+
+  provisioner "ansible" {
+    playbook_file = "./ansible/remove-ec2-user.yml"
+    extra_arguments = [ "--vault-password-file=${var.vault_pw_file_path}", "-e @${var.vault_path}" ]
   }
 }

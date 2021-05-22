@@ -1,0 +1,19 @@
+---
+
+- name: Configure automated updates
+  block:
+    - name: Install dnf-automatic
+      ansible.builtin.dnf:
+        name: dnf-automatic
+        state: latest
+    
+    - name: Configure automatic updates
+      ansible.builtin.lineinfile:
+        path: /etc/dnf/automatic.conf
+        regexp: '^apply_updates = '
+        line: apply_updates = yes
+
+    - ansible.builtin.systemd:
+        name: dnf-automatic-install.timer
+        state: started
+        enabled: yes

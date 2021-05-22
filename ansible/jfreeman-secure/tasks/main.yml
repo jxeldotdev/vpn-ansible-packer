@@ -1,149 +1,28 @@
 ---
 # tasks file for jfreeman-secure
 
-- name: Setup SSH Access
-  when: not running_locally
+- name: Run tasks logged in as ec2-user
   block:
-  - name: "Check port {{ ansible_port }}"
-    wait_for:
-      port: "{{ ansible_port }}"
-      state: "started"
-      host: "{{ inventory_hostname }}"
-      connect_timeout: "5"
-      timeout: "5"
-    delegate_to: "localhost"
-    ignore_errors: "yes"
-    register: ssh_port
-    become: false
+    - name: Configure RedHat Subscription
+      community.general.redhat_subscription:
+        state: present
+        org_id: "{{ redhat_org_id }}"
+        activationkey: "{{ redhat_activation_key }}"
 
-  - name: "Check port 22"
-    wait_for:
-      port: "22"
-      state: "started"
-      host: "{{ inventory_hostname }}"
-      connect_timeout: "5"
-      timeout: "5"
-    delegate_to: "localhost"
-    ignore_errors: "yes"
-    register: ssh_port_default
-    become: false
-    when: 
-      - ssh_port is defined 
-      - ssh_port.state is undefined
+    - name: Set SELinux to Enforcing mode
+      ansible.posix.selinux:
+        policy: targeted
+        state: enforcing
+    
+    - import_tasks: users.yml
+    - import_tasks: sshd.yml
+    - import_tasks: packages.yml
+    - import_tasks: automated_updates.yml
+      when: setup_automatic_updates
+      
+  remote_user: ec2-user
 
-  - name: Set SSH port to 22
-    set_fact:
-      ansible_port: "22"
-    when: ssh_port_default.state is defined
-
-- name: Create a user for Ansible
-  ansible.builtin.user:
-    name: "{{ ansible_user_name }}"
-    shell: /bin/bash
-    password: "{{ ansible_user_password }}"
-    groups: adm, wheel
-    append: yes
-
-- name: Add SSH Keys to Ansible user
-  ansible.posix.authorized_key:
-    user: ansible
-    state: present
-    key: "{{ github_keys }}"
-
-- name: Install packages & Debugging tools
-  ansible.builtin.package:
-    name: "{{ item }}"
-  with_items: 
-    - epel-release
-    - gpg
-    - tmux
-    - sudo
-    - wget
-    - firewalld
-    - strace
-    - htop
-    - lsof
-    - glances
-    - sysstat
-    - atop
-    - iotop
-    - tcpdump
-    - dig
-    - vim
-    - mtr
-    - iostat
-    - subscription-manager
-
-- name: Update Packages
-  ansible.builtin.package:
-    name: '*'
-    state: latest
-
-- name: Set SELinux to Enforcing mode
-  ansible.posix.selinux:
-    policy: targeted
-    state: enforcing
-
-- name: Start and Enable Firewalld
-  block:
-    - ansible.builtin.service:
-        name: firewalld
-        state: started
-        enabled: true
-    - ansible.posix.firewalld:
-        zone: public
-        permanent: yes
-        state: enabled
-
-- name: Configure RedHat Subscription
-  community.general.redhat_subscription:
-    state: present
-    org_id: "{{ redhat_org_id }}"
-    activationkey: "{{ redhat_activation_key }}"
-    auto_attach: true
-
-# Security by obscurity :)
-- name: Configure SSHD
-  block: 
-  - name: Update sshd config
-    ansible.builtin.template:
-      src: templates/sshd_config.j2
-      dest: /etc/ssh/sshd_config
-      owner: root
-      group: root
-      mode: '0644'
-
-  - name: Configure SSH Port for SELinux
-    community.general.seport:
-      ports: "{{ sshd_port }}"
-      proto: "tcp"
-      setype: "ssh_port_t"
-      state: present
-
-  - name: Allow SSH port through Firewall
-    ansible.posix.firewalld:
-      port: "{{ sshd_port }}/tcp"
-      permanent: yes 
-      immediate: yes
-      state: enabled 
-  
-  - name: Restart SSHD
-    ansible.builtin.service:
-      name: sshd
-      state: reloaded
-
-  - name: Set SSHD Port
-    ansible.builtin.set_fact:
-      ansible_port: "{{ sshd_port }}"
-
-  - name: Block port 22 SSH
-    ansible.posix.firewalld:
-      port: 22/tcp
-      state: disabled
-      immedate: yes 
-  
-  - name: Block port 22 SSH
-    ansible.posix.firewalld:
-      port: 22/tcp
-      state: disabled
-      immedate: yes 
+- name: Remove ec2-user
+  import_tasks: delete_ec2_user.yml
+  remote_user: "{{ ansible_user_name }}"
+  become: yes

@@ -1,28 +1,19 @@
 ---
 # tasks file for jfreeman-secure
 
-- name: Run tasks logged in as ec2-user
-  block:
-    - name: Configure RedHat Subscription
-      community.general.redhat_subscription:
-        state: present
-        org_id: "{{ redhat_org_id }}"
-        activationkey: "{{ redhat_activation_key }}"
+- name: Configure RedHat Subscription
+  community.general.redhat_subscription:
+    state: present
+    org_id: "{{ redhat_org_id }}"
+    activationkey: "{{ redhat_activation_key }}"
 
-    - name: Set SELinux to Enforcing mode
-      ansible.posix.selinux:
-        policy: targeted
-        state: enforcing
-    
-    - import_tasks: users.yml
-    - import_tasks: sshd.yml
-    - import_tasks: packages.yml
-    - import_tasks: automated_updates.yml
-      when: setup_automatic_updates
-      
-  remote_user: ec2-user
+- name: Set SELinux to Enforcing mode
+  ansible.posix.selinux:
+    policy: targeted
+    state: enforcing
 
-- name: Remove ec2-user
-  import_tasks: delete_ec2_user.yml
-  remote_user: "{{ ansible_user_name }}"
-  become: yes
+- import_tasks: users.yml
+- import_tasks: sshd.yml
+- import_tasks: packages.yml
+- import_tasks: automated_updates.yml
+  when: setup_automatic_updates

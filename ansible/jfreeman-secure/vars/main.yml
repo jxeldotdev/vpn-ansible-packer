@@ -25,3 +25,5 @@ utility_packages:
   - subscription-manager
   - policycoreutils-python-utils
   - logrotate
+  - fail2ban
+

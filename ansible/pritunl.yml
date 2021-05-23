@@ -6,10 +6,11 @@
   remote_user: jfreeman
   become_method: sudo
   become: true
-  var_files:
+  vars_files:
     - vault.yml
   vars:
     - setup_firwalld: no
     - configure_mongodb_backups: no
+    - ansible_become_password: "{{ vault_ansible_user_password }}"
   roles:
     - './jfreeman-pritunl/'

@@ -1,9 +1,10 @@
 ---
 - name: Remove EC2 User
+  hosts: all
   remote_user: jfreeman
   become_method: sudo
   become: yes
-  var_files:
+  vars_files:
     - vault.yml
   tasks:
     - name: Remove ec2-user 

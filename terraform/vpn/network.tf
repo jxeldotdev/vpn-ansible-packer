@@ -1,9 +1,9 @@
 data "aws_subnet" "vpn_subnet" {
-    id = var.subnet_id
+  id = var.subnet_id
 }
 
 data "aws_vpc" "vpn" {
-    id = var.vpc_id
+  id = var.vpc_id
 }
 
 resource "aws_security_group" "vpn" {

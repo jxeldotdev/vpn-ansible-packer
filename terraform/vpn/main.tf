@@ -1,9 +1,9 @@
 data "aws_ami" "vpn_ami" {
-  most_recent      = true
-  owners           = ["self"]
+  most_recent = true
+  owners      = ["self"]
 
   filter {
-    name = "name"
+    name   = "name"
     values = [var.ami_filter]
   }
 
@@ -20,16 +20,16 @@ data "aws_ami" "vpn_ami" {
 }
 
 resource "aws_key_pair" "vpn_key_pair" {
-  key_name = var.key_pair_name
+  key_name   = var.key_pair_name
   public_key = var.pub_key
 }
 
 module "vpn_instance" {
-  source                 = "terraform-aws-modules/ec2-instance/aws"
-  version                = "~> 2.0"
+  source  = "terraform-aws-modules/ec2-instance/aws"
+  version = "~> 2.0"
 
-  name                   = var.instance_name
-  instance_count         = 1
+  name           = var.instance_name
+  instance_count = 1
 
   ami                    = data.aws_ami.vpn_ami.id
   instance_type          = var.instance_type

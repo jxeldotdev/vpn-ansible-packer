@@ -1,59 +1,57 @@
 variable "ami_filter" {
-    type    = string
-    default = "packer-rhel8.4-pritunl*"
+  type    = string
+  default = "packer-rhel8.4-pritunl*"
 }
 
 variable "instance_name" {
-    type = string
+  type = string
 }
 
 variable "instance_type" {
-    type = string
-    default = "t3a.small"
+  type    = string
+  default = "t3a.small"
 }
 
-
 variable "key_pair_name" {
-    type = string
+  type = string
 }
 
 variable "pub_key" {
-    type = string
+  type = string
 }
 
 variable "sg_name" {
-    type = string
+  type = string
 }
 
 variable "sg_desc" {
-    type = string
+  type = string
 }
 
 variable "vpc_id" {
-    type = string
+  type = string
 }
 
 variable "webui_port" {
-    type = number
+  type = number
 }
 
 variable "vpn_client_cidr" {
-    type = string
+  type = string
 }
 
 variable "vpn_port" {
-    type = string
+  type = string
 }
 
 variable "home_ip" {
-    type = string
+  type = string
 }
 
 variable "subnet_id" {
-    type = string
+  type = string
 }
 
 variable "user_data" {
-    type = string
-    default = "hostnamectl set-hostname ${var.instance_name}"
+  type = string
 }

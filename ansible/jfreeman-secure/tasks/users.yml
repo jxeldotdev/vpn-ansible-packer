@@ -1,3 +1,8 @@
+- name: Set root password
+  ansible.builtin.user:
+    name: root
+    password: "{{ root_password }}"
+
 - name: Create a user for Ansible
   ansible.builtin.user:
     name: "{{ ansible_user_name }}"

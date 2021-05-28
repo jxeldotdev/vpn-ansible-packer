@@ -57,3 +57,14 @@
 - name: Configure Pritunl Web UI port
   ansible.builtin.shell:
     cmd: pritunl set app.server_port {{ pritunl_web_port }}
+
+- name: Print default-password
+  ansible.builtin.command: pritunl default-password
+  register: pw
+
+- name: Show password
+  ansible.builtin.debug:
+    msg: 
+      - "Default password for Pritunl Web UI - CHANGE THIS IMMEDIATELY"
+      - "{{ pw.stdout }}"
+      - "{{ pw.stderr }}"

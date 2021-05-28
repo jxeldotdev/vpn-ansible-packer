@@ -3,3 +3,4 @@
 
 mongodb_uri: "mongodb://localhost:27017/pritunl"
 pritunl_web_port: 443
+disable_firewalld: yes

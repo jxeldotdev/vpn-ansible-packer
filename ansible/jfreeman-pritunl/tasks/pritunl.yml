@@ -62,9 +62,10 @@
   ansible.builtin.command: pritunl default-password
   register: pw
 
+  # This should be changed immediately when starting the instance.
 - name: Show password
   ansible.builtin.debug:
     msg: 
-      - "Default password for Pritunl Web UI - CHANGE THIS IMMEDIATELY"
+      - "Default password for Pritunl Web UI - CHANGE THIS IMMEDIATELY ONCE STARTING THE INSTANCE"
       - "{{ pw.stdout }}"
       - "{{ pw.stderr }}"

@@ -21,17 +21,18 @@ Create an ansible vault file with the following variables:
 * vault_ansible_user_password
 * vault_redhat_activation_key
 * vault_ansible_user_password
+* ansible_become_password
 
 ### Install dependencies
 
 ```
 pip install pipenv
 
-# Installs ansible and boto3
+# Installs ansible 
 pipenv install
 ```
 
-If the command fails, run `make clean` to delete the temporary security group.
+Please ensure that you have access to the RHEL AMIs.
 
 ### Building base AMI
 
@@ -39,7 +40,7 @@ If the command fails, run `make clean` to delete the temporary security group.
 # Verify that you can access an AWS account
 aws sts get-caller-identity
 
-make base-ami
+./build.sh base-ami
 ```
 
 ### Building VPN AMI
@@ -48,5 +49,8 @@ make base-ami
 # Verify that you can access an AWS account
 aws sts get-caller-identity
 
-make pritunl-ami
+./build.sh pritunl-ami
 ```
+
+### Terraform configuration
+

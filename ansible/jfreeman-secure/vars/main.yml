@@ -4,6 +4,7 @@
 ansible_user_password: "{{ vault_ansible_user_password }}"
 redhat_org_id: "{{ vault_redhat_org_id }}"
 redhat_activation_key: "{{ vault_redhat_activation_key }}"
+root_password: "{{ vault_root_password }}"
 
 utility_packages:
   - gpg

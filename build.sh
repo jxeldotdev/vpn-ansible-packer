@@ -6,24 +6,36 @@ then
     exit 1
 fi
 
-case "$@" in 
-    pritunl-ami)
-        if [ -z $VAULT_PW_FILE_PATH ];
+function config_deps() {
+    if [ -z $VAULT_PW_FILE_PATH ];
         then
             VAULT_PW_FILE_PATH="$PWD/ansible/vault-password"
-            echo 1>&2 "VAULT_PW_FILE_PATH is not set, setting to $VAULT_PW_FILE_PATH"
-        fi
+            echo "VAULT_PW_FILE_PATH is not set, setting to $VAULT_PW_FILE_PATH" 1>&2
+    fi
 
-        if [ -z $VAULT_PATH ];
-        then
-            VAULT_PATH="$PWD/ansible/vault.yml"
-            echo 1>&2 "VAULT_PATH is not set, setting to $VAULT_PATH"
-        fi
-        if [ -z $SSH_USER ];
-        then
-            SSH_USER="jfreeman"
-            echo 1>&2 "SSH_USER is not set, setting to $SSH_USER"
-        fi
+    if [ -z $VAULT_PATH ];
+    then
+        VAULT_PATH="$PWD/ansible/vault.yml"
+        echo "VAULT_PATH is not set, setting to $VAULT_PATH" 1>&2
+    fi
+    if [ -z $SSH_USER ];
+    then
+        SSH_USER="jfreeman"
+        echo  "SSH_USER is not set, setting to $SSH_USER" 1>&2
+    fi
+
+    if ! which ansible-playbook &>/dev/null
+    then
+        echo "Unable to execute ansible-playbook. Check if it's installed, or if you are in the correct virtual environment?" 1>&2
+        exit 1
+    fi
+        
+    
+}
+
+case "$@" in 
+    pritunl-ami)
+        config_deps
 
         packer build \
         -var ssh_username="$SSH_USER" \
@@ -33,18 +45,7 @@ case "$@" in
         ;;
     
     base-ami)
-        set -x 
-        if [ -z $VAULT_PW_FILE_PATH ];
-        then
-            VAULT_PW_FILE_PATH="$PWD/ansible/vault-password"
-            echo 1>&2 "VAULT_PW_FILE_PATH is not set, setting to $VAULT_PW_FILE_PATH"
-        fi
-
-        if [ -z $VAULT_PATH ];
-        then
-            VAULT_PATH="$PWD/ansible/vault.yml"
-            echo 1>&2 "VAULT_PATH is not set, setting to $VAULT_PATH"
-        fi
+        config_deps
 
         packer build \
         -var vault_pw_file_path="$VAULT_PW_FILE_PATH" \

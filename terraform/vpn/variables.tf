@@ -52,3 +52,8 @@ variable "home_ip" {
 variable "subnet_id" {
     type = string
 }
+
+variable "user_data" {
+    type = string
+    default = "hostnamectl set-hostname ${var.instance_name}"
+}

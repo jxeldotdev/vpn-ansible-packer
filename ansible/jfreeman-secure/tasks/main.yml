@@ -6,6 +6,7 @@
     state: present
     org_id: "{{ redhat_org_id }}"
     activationkey: "{{ redhat_activation_key }}"
+  when: activate_rhel
 
 - name: Set SELinux to Enforcing mode
   ansible.posix.selinux:

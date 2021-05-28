@@ -1,12 +1,37 @@
 ---
 - name: Add pritunl repo
   ansible.builtin.template:
-    src: templates/pritunl.repo
+    src: files/pritunl.repo
     dest: /etc/yum.repos.d/pritunl.repo
+
+- name: Add Oracle EPEL 7 Repo ()
+  block:
+    - name: Download RPM keys
+      ansible.builtin.get_url:
+        url: https://yum.oracle.com/RPM-GPG-KEY-oracle-ol7
+        dest: /etc/pki/rpm-gpg/RPM-GPG-KEY-oracle
+        mode: '0644'
+
+    - name: Deploy temp oracle repo
+      ansible.builtin.copy:
+        src: files/oracle_epel7.repo
+        dest: /etc/yum.repos.d/ol7-temp.repo
+
+    - name: Install package
+      ansible.builtin.package:
+        name: oraclelinux-release-el7
+        state: present
+
+    - name: Remove temp repo
+      ansible.builtin.file:
+        path: /etc/yum.repos.d/ol7-temp.repo
+        state: absent
 
 - name: Install pritunl
   ansible.builtin.yum:
-    name: pritunl
+    name: 
+      - pritunl
+      - https://yum.oracle.com/repo/OracleLinux/OL7/developer_EPEL/x86_64/getPackage/openvpn-2.4.10-1.el7.x86_64.rpm
     state: present
 
 - name: Enable and start service
@@ -32,3 +57,15 @@
 - name: Configure Pritunl Web UI port
   ansible.builtin.shell:
     cmd: pritunl set app.server_port {{ pritunl_web_port }}
+
+- name: Print default-password
+  ansible.builtin.command: pritunl default-password
+  register: pw
+
+  # This should be changed immediately when starting the instance.
+- name: Show password
+  ansible.builtin.debug:
+    msg: 
+      - "Default password for Pritunl Web UI - CHANGE THIS IMMEDIATELY ONCE STARTING THE INSTANCE"
+      - "{{ pw.stdout }}"
+      - "{{ pw.stderr }}"

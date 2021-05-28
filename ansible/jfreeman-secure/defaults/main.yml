@@ -1,2 +1,4 @@
 ---
 # defaults file for jfreeman-secure
+
+activate_rhel: yes

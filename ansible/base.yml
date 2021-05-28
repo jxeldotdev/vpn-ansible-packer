@@ -6,11 +6,12 @@
   remote_user: ec2-user
   become_method: sudo
   become: true
+  vars_files:
+    - vault.yml
   vars:
-    sshd_port: 2048
+    # vault_redhat_org_id, vault_redhat_activation_key and ansible_user_pasword are in vault
     github_keys: https://github.com/jxeldotdev.keys
     ansible_user_name: jfreeman
-    running_locally: false
-    # vault_redhat_org_id, vault_redhat_activation_key and ansible_user_pasword are in vault
+    setup_automatic_updates: yes
   roles:
     - './jfreeman-secure/'

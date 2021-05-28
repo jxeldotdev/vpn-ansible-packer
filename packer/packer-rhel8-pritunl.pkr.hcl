@@ -1,7 +1,7 @@
 data "amazon-ami" "rhel8-base" {
   filters = {
-    virtualization_type = "hvm"
-    name                = "packer_rhel8.3_base_*"
+    virtualization-type = "hvm"
+    name                = "packer-rhel8.4-base-*"
     root-device-type    = "ebs"
   }
   owners      = ["self"]
@@ -13,7 +13,12 @@ variable "ssh_username" {
   type = string
 }
 
-variable "ssh_port" {
+variable "vault_pw_file_path" {
+  type = string
+}
+
+
+variable "vault_path" {
   type = string
 }
 
@@ -22,15 +27,18 @@ source "amazon-ebs" "rhel8" {
   region        = "ap-southeast-2"
   instance_type = "t2.micro"
   ssh_username  = var.ssh_username
-  ssh_port      = var.ssh_port
   source_ami    = data.amazon-ami.rhel8-base.id
-  ami_name      = "packer-rhel8.3-pritunl-{{timestamp}}"
+  ami_name      = "packer-rhel8.4-pritunl-{{timestamp}}"
+  ssh_agent_auth = true
+  encrypt_boot  = true
 }
 
 build {
-  sources = ["source.amazon-ebs.rhel8-base"]
+  sources = ["source.amazon-ebs.rhel8"]
 
   provisioner "ansible" {
-    playbook_file = "../ansible/pritunl.yml"
+    playbook_file = "./ansible/pritunl.yml"
+    user          = var.ssh_username
+    extra_arguments = [ "--vault-password-file=${var.vault_pw_file_path}", "-e @${var.vault_path}" ]
   }
 }

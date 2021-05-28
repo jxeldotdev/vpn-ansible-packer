@@ -1,5 +1,7 @@
 ---
 # tasks file for jfreeman-pritunl
+- include: mongodb.yml
 
+- include: pritunl.yml
 
-
+- include: firewalld.yml

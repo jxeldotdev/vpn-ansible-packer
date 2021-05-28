@@ -1,15 +1,8 @@
 ---
-- ansible.posix.firewalld:
-    service: "{{ pritunl_web_port }}"
-    state: enabled
-    permanent: yes
 
-- ansible.posix.firewalld:
-    service: http
-    state: enabled
-    permanent: yes
-
-- ansible.posix.firewalld:
-    port: "{{ vpn_port }}/udp"
-    state: enabled
-    permanent: yes
+- name: Disable firewalld
+  ansible.builtin.service:
+    name: firewalld
+    state: stopped
+    enabled: no
+  when: disable_firewalld

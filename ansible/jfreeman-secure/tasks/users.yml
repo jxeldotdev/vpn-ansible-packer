@@ -1,0 +1,18 @@
+- name: Set root password
+  ansible.builtin.user:
+    name: root
+    password: "{{ root_password }}"
+
+- name: Create a user for Ansible
+  ansible.builtin.user:
+    name: "{{ ansible_user_name }}"
+    shell: /bin/bash
+    password: "{{ ansible_user_password }}"
+    groups: adm, wheel
+    append: yes
+
+- name: Add SSH Keys to Ansible user
+  ansible.posix.authorized_key:
+    user: "{{ ansible_user_name }}"
+    state: present
+    key: "{{ github_keys }}"

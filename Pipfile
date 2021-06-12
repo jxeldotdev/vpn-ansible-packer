@@ -4,7 +4,6 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-ansible = "*"
 molecule = "*"
 molecule-podman = "*"
 boto3 = "*"

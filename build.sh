@@ -41,7 +41,8 @@ case "$@" in
         -var ssh_username="$SSH_USER" \
         -var vault_pw_file_path="$VAULT_PW_FILE_PATH" \
         -var vault_path="$VAULT_PATH" \
-        packer/packer-rhel8-pritunl.pkr.hcl
+        packer/packer-rhel8-pritunl.pkr.hcl 2>&1 | tee build-log
+        grep -B 5 -N 5 -i "show password" build-log
         ;;
     
     base-ami)

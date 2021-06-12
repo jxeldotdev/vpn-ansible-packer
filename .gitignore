@@ -3,3 +3,4 @@ vault-password
 .env
 .group.json
 .vscode
+build-log

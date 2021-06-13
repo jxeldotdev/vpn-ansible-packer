@@ -18,7 +18,7 @@ resource "aws_security_group_rule" "web_ui" {
   from_port         = var.webui_port
   to_port           = var.webui_port
   protocol          = "tcp"
-  cidr_blocks       = [var.home_ip]
+  cidr_blocks       = [var.home_ip, var.vpn_client_cidr]
   security_group_id = aws_security_group.vpn.id
 }
 

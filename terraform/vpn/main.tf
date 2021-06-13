@@ -24,23 +24,29 @@ resource "aws_key_pair" "vpn_key_pair" {
   public_key = var.pub_key
 }
 
-module "vpn_instance" {
-  source  = "terraform-aws-modules/ec2-instance/aws"
-  version = "~> 2.0"
 
-  name           = var.instance_name
-  instance_count = 1
+resource "aws_instance" "vpn" {
+  ami = data.aws_ami.vpn_ami.id
 
-  ami                    = data.aws_ami.vpn_ami.id
-  instance_type          = var.instance_type
-  key_name               = aws_key_pair.vpn_key_pair.id
-  monitoring             = true
-  vpc_security_group_ids = [aws_security_group.vpn.id]
-  subnet_id              = var.subnet_id
+  # REQUIRED FOR VPN TO WORK PROPERLY!
+  source_dest_check           = false
+
+  user_data                   = var.user_data
+  instance_type               = var.instance_type
+  vpc_security_group_ids      = [aws_security_group.vpn.id]
+  subnet_id                   = var.subnet_id
+  key_name                    = aws_key_pair.vpn_key_pair.id
+  monitoring                  = true
+  associate_public_ip_address = true
+
+  root_block_device {
+    encrypted   = true
+    volume_size = "20"
+  }
+
 
   tags = {
-    Terraform   = "true"
-    Environment = "dev"
-    App         = "Pritunl"
+    Terraform = "True"
+    App       = "Pritunl"
   }
 }

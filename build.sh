@@ -6,7 +6,7 @@ then
     exit 1
 fi
 
-function config_deps() {
+function check_deps() {
     if [ -z $VAULT_PW_FILE_PATH ];
         then
             VAULT_PW_FILE_PATH="$PWD/ansible/vault-password"
@@ -29,20 +29,36 @@ function config_deps() {
         echo "Unable to execute ansible-playbook. Check if it's installed, or if you are in the correct virtual environment?" 1>&2
         exit 1
     fi
+    
+    # Check AWS CLI & Credentials are configured properly
+    if which aws &>/dev/null;
+    then
+        if ! aws sts get-caller-identity &>/dev/null;
+        then
+            echo "Unable to check AWS credentials. Exiting.." 1>&2
+            aws sts get-caller-identity
+            exit 1
+        fi
+    else
+        echo "AWS CLI is not installed or is incorrectly configured." 1>&2
+        which aws
+        aws
+        exit 1
+    fi
         
     
 }
 
 case "$@" in 
     pritunl-ami)
-        config_deps
+        check_deps
 
         packer build \
         -var ssh_username="$SSH_USER" \
         -var vault_pw_file_path="$VAULT_PW_FILE_PATH" \
         -var vault_path="$VAULT_PATH" \
         packer/packer-rhel8-pritunl.pkr.hcl 2>&1 | tee build-log
-        grep -B 5 -N 5 -i "show password" build-log
+        grep -B 5 -A 5 -ni "show password" build-log
         ;;
     
     base-ami)

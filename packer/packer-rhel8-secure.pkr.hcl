@@ -21,5 +21,6 @@ build {
   provisioner "ansible" {
     playbook_file = "./ansible/base.yml"
     extra_arguments = [ "--vault-password-file=${var.vault_pw_file_path}", "-e @${var.vault_path}" ]
+    ansible_env_vars = ["ANSIBLE_SSH_TRANSFER_METHOD=scp"]
   }
 }

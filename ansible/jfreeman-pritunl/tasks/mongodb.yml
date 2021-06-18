@@ -13,15 +13,23 @@
       gpg --keyserver hkp://keyserver.ubuntu.com --recv-keys 7568D9BB55FF9E5287D586017AE645C0CF8E292A;
       gpg --armor --export 7568D9BB55FF9E5287D586017AE645C0CF8E292A > key.tmp; sudo rpm --import key.tmp; rm -f key.tmp
   
-- name: Add mongodb repo
-  ansible.builtin.copy:
-    src: files/mongodb-org-4.2.repo
-    dest: /etc/yum.repos.d/mongodb-org-4.2.repo
+
+- name: Add MongoDB Repository
+  ansible.builtin.yum_repository:
+    name: mongodb-org-4.4
+    description: MongoDB Repository
+    baseurl: https://repo.mongodb.org/yum/redhat/$releasever/mongodb-org/4.4/x86_64/
+    gpgkey: https://www.mongodb.org/static/pgp/server-4.4.asc
+    file: mongodb-org-4.4
+    gpgcheck: yes
+    enabled: yes
+
 
 - name: Install mongodb
-  ansible.builtin.yum:
+  ansible.builtin.dnf:
     name: mongodb-org
     state: present
+
 
 - name: Enable and start mongodb
   ansible.builtin.service:

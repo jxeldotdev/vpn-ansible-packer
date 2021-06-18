@@ -62,7 +62,7 @@ case "$@" in
         ;;
     
     base-ami)
-        config_deps
+        check_deps
 
         packer build \
         -var vault_pw_file_path="$VAULT_PW_FILE_PATH" \

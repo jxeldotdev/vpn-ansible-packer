@@ -15,7 +15,6 @@ jobs:
       - run: |
           echo "TODO THIS IS NOT IMPLEMENTED YET!" 2>&1
           exit 255
-    
   build-aws-ami:
     runs-on: ubuntu-latest
     steps:
@@ -40,13 +39,17 @@ jobs:
       - name: Pull Ansible Vault Password from AWS Secrets Manager
         run: |
           vaultFilePassword=$(aws secretsmanager get-secret-value --secret-id ${{ secrets.vault_password_arn }} | jq '.SecretString' )
-          if ! (echo $vaultFilePassword > ansible/vault-password); then
+          if ! (echo $vaultFilePassword > /tmp/vault_pw_file); then
             echo "Unable to write Ansible Vault password to file." 2>&1
             exit 1
           fi
-
+      
       - name: Build AWS AMI for Pritunl VM Image
         run: |
-          echo "TODO THIS IS NOT IMPLEMENTED YET!" 2>&1
+          echo "TODO" 2>&1
           exit 255
+          # packer build \ 
+          # -var vault_pw_file="/tmp/vault_pw_file" \
+          # -var vault_path="/tmp/ansible_vault" \
+          # packer/packer-rhel8-pritunl.pkr.hcl
 

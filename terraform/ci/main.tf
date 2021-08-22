@@ -9,8 +9,30 @@ data "aws_iam_policy_document" "assume_role_policy" {
     actions = ["sts:AssumeRole"]
 
     principals {
+      type = "AWS"
+      identifiers = [
+        "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"
+      ]
+    }
+  }
+  // Allow users in root acount to assume this role.
+  statement {
+    actions = ["sts:AssumeRole"]
+    principals {
       type        = "AWS"
-      identifiers = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"]
+      identifiers = ["arn:aws:iam::${var.root_aws_account_id}:root"]
+    }
+
+    condition {
+      test     = "Bool"
+      variable = "aws:MultiFactorAuthPresent"
+      values   = ["true"]
+    }
+
+    condition {
+      test     = "NumericLessThan"
+      variable = "aws:MultiFactorAuthAge"
+      values   = ["86400"]
     }
   }
 }
@@ -76,6 +98,7 @@ data "aws_iam_policy_document" "service_role_permissions_packer" {
   }
 }
 
+// IAM policy that grants permissions to access SecretsManager
 module "service_role_policy_secretsmanager" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-policy"
   version = "~> 3.0"
@@ -86,13 +109,14 @@ module "service_role_policy_secretsmanager" {
   policy      = data.aws_iam_policy_document.service_role_permissions.json
 }
 
+// Policy to grant permissions required for building AMIs
 module "service_role_policy_packer" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-policy"
   version = "~> 3.0"
 
-  name        = var.svc_packer_role_info.name
+  name        = var.svc_packer_policy_info.name
   path        = "/"
-  description = var.svc_packer_role_info.description
+  description = var.svc_packer_policy_info.description
   policy      = data.aws_iam_policy_document.service_role_permissions_packer.json
 
 }
@@ -113,13 +137,13 @@ module "service_user" {
   force_destroy                 = true
 }
 
-// Group that allows users to assume CI Role
+// Group that allows users to Assume CI Role
 module "service_role_group" {
   source = "terraform-aws-modules/iam/aws//modules/iam-group-with-assumable-roles-policy"
 
-  name            = var.service_role_group
+  name            = var.service_role_group_name
   assumable_roles = [aws_iam_role.service_role.arn]
-  group_users     = [module.service_user.iam_user_name]
+  group_users     = [module.service_user.iam_user_name, var.operator_name]
 
   depends_on = [module.service_user, aws_iam_role.service_role]
 }

@@ -17,3 +17,22 @@ variable "svc_packer_policy_info" {
     name        = string
   })
 }
+
+variable "svc_packer_role_name" {
+  type = object({
+    description = string
+    name        = string
+  })
+}
+
+variable "operator_name" {
+  type        = string
+  default     = "jfreeman"
+  description = "Name of Adminstrator's / Operator's IAM user."
+}
+
+variable "pgp_key" {
+  type        = string
+  default     = ""
+  description = "description"
+}

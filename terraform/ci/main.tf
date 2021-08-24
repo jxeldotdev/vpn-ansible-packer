@@ -142,7 +142,7 @@ module "service_user" {
 module "service_role_group" {
   source = "terraform-aws-modules/iam/aws//modules/iam-group-with-assumable-roles-policy"
 
-  name            = var.service_role_group_name
+  name            = var.service_group_name
   assumable_roles = [aws_iam_role.service_role.arn]
   group_users     = [module.service_user.iam_user_name]
   depends_on      = [module.service_user, aws_iam_role.service_role]

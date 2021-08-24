@@ -45,7 +45,7 @@ data "aws_iam_policy_document" "service_role_permissions_secretsmanager" {
       "secretsmanager:RestoreSecret",
       "secretsmanager:UpdateSecret"
     ]
-    resources = [aws_secretsmanager_secret.ansible_vault_pass.arn, aws_secretsmanager_secret.ansible_vault_file.arn]
+    resources = [aws_secretsmanager_secret.ansible_vault_pass.arn]
   }
 }
 
@@ -122,8 +122,9 @@ module "service_role_policy_packer" {
 }
 
 resource "aws_iam_role" "service_role" {
-  name               = var.service_role_name
+  name               = var.svc_packer_role_name.name
   path               = "/"
+  description        = var.svc_packer_role_name.description
   assume_role_policy = data.aws_iam_policy_document.assume_role_policy.json
 }
 

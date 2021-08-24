@@ -2,7 +2,6 @@
 
 - name: Setup base configuration
   hosts: all
-  # remote_user is ignored by packer, set for when running manually.
   remote_user: ec2-user
   become_method: sudo
   become: true

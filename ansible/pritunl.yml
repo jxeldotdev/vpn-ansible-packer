@@ -1,5 +1,19 @@
 ---
-
+- name: Setup base configuration
+  hosts: all
+  remote_user: ec2-user
+  become_method: sudo
+  become: true
+  vars_files:
+    - vault.yml
+  vars:
+    # vault_redhat_org_id, vault_redhat_activation_key and ansible_user_pasword are in vault
+    github_keys: https://github.com/jxeldotdev.keys
+    ansible_user_name: jfreeman
+    setup_automatic_updates: yes
+  roles:
+    - './jfreeman-secure/'
+---
 - name: Install and configure Pritunl VPN
   hosts: all
   # remote_user is ignored by packer, set for when running manually.

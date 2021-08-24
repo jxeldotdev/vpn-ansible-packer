@@ -5,7 +5,7 @@ Creates an IAM role, group, user and multiple policies for usage in a CI pipelin
 ## Inputs
 |Name|Description|Type   |Default|Required   |
 |---|---|---|---|---|
-|pgp_key|Regex used to search for AMI   |String   |packer-rhel8.4-pritunl*   |True   |
+|pgp_key|PGP|String   |packer-rhel8.4-pritunl*   |True   |
 |instance_name   |name of ec2 instance   |String   |   |True   |
 |instance_type   |AWS EC2 Instance type   |String   |t3a.small   |False   |
 |key_pair_name   |Name of EC2 Key pair to create   |String   |   |True   |

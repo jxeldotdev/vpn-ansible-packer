@@ -1,8 +1,15 @@
 variable "service_group_name" {
   type        = string
-  default     = ""
+  default     = "svc_packer_ci"
   description = "Name of AWS IAM group that grants permissions to assume packer builder iam role"
 }
+
+variable "service_user_name" {
+  type        = string
+  default     = "svc_packer_ci"
+  description = "Name of IAM user used in CI to assume packer iam role"
+}
+
 
 variable "svc_secretsmanager_policy_info" {
   type = object({
@@ -25,14 +32,8 @@ variable "svc_packer_role_name" {
   })
 }
 
-variable "operator_name" {
-  type        = string
-  default     = "jfreeman"
-  description = "Name of Adminstrator's / Operator's IAM user."
-}
-
 variable "pgp_key" {
   type        = string
-  default     = ""
-  description = "description"
+  default     = "keybase:joelfreeman"
+  description = "PGP Key used for encrypting IAM Access Keys"
 }

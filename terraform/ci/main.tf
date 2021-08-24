@@ -143,8 +143,7 @@ module "service_role_group" {
 
   name            = var.service_role_group_name
   assumable_roles = [aws_iam_role.service_role.arn]
-  group_users     = [module.service_user.iam_user_name, var.operator_name]
-
+  group_users     = [module.service_user.iam_user_name]
   depends_on = [module.service_user, aws_iam_role.service_role]
 }
 

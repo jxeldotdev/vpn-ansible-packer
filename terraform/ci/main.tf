@@ -147,11 +147,6 @@ module "service_role_group" {
   depends_on      = [module.service_user, aws_iam_role.service_role]
 }
 
-// Secrets
-resource "aws_secretsmanager_secret" "ansible_vault_file" {
-  name = var.vault_file_secret_name
-}
-
 resource "aws_secretsmanager_secret" "ansible_vault_pass" {
   name = var.vault_pass_secret_name
 }

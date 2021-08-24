@@ -50,10 +50,3 @@ variable "vault_pass_secret_name" {
   type        = string
   description = "Name of AWS SecretsManager secret for Ansible Vault Password"
 }
-
-variable "vault_file_secret_name" {
-  type        = string
-  description = "Name of AWS SecretsManager secret for Ansible Vault file"
-}
-
-

@@ -6,7 +6,7 @@ output "svc_role_arn" {
 
 
 output "svc_user_access_key" {
-  value = module.service_user.iam_access_key_id
+  value     = module.service_user.iam_access_key_id
   sensitive = true
 }
 

@@ -49,7 +49,7 @@ data "aws_iam_policy_document" "service_role_permissions_secretsmanager" {
   }
 }
 
-// Taken from https://blog.stefan-koch.name/2021/05/16/restricted-packer-aws-permissions
+// Taken from https://blog.stefan-koch.name/202/05/16/restricted-packer-aws-permissions
 data "aws_iam_policy_document" "service_role_permissions_packer" {
   statement {
     sid = "RatherSafeActions"
@@ -106,7 +106,7 @@ module "service_role_policy_secretsmanager" {
   name        = var.svc_secretsmanager_policy_info.name
   path        = "/"
   description = var.svc_secretsmanager_policy_info.description
-  policy      = data.aws_iam_policy_document.service_role_permissions.json
+  policy      = data.aws_iam_policy_document.service_role_permissions_secretsmanager.json
 }
 
 // Policy to grant permissions required for building AMIs
@@ -144,7 +144,7 @@ module "service_role_group" {
   name            = var.service_role_group_name
   assumable_roles = [aws_iam_role.service_role.arn]
   group_users     = [module.service_user.iam_user_name]
-  depends_on = [module.service_user, aws_iam_role.service_role]
+  depends_on      = [module.service_user, aws_iam_role.service_role]
 }
 
 // Secrets

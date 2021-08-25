@@ -21,6 +21,7 @@ def get_secret():
         )
     except ClientError as ex:
         logger.critical(msg="Failed to setup AWS Session", exc_info=ex)
+        exit(1)
 
     try:
         secret_name = os.environ["VAULT_AWS_SECRET_NAME"]

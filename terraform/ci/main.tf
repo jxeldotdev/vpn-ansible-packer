@@ -40,12 +40,16 @@ data "aws_iam_policy_document" "assume_role_policy" {
 data "aws_iam_policy_document" "service_role_permissions_secretsmanager" {
   statement {
     actions = [
-      "secretsmanager:ListSecrets",
-      "secretsmanager:PutSecretValue",
-      "secretsmanager:RestoreSecret",
-      "secretsmanager:UpdateSecret"
+      "secretsmanager:GetResourcePolicy",
+      "secretsmanager:GetSecretValue",
+      "secretsmanager:DescribeSecret",
+      "secretsmanager:ListSecretVersionIds"
     ]
     resources = [aws_secretsmanager_secret.ansible_vault_pass.arn]
+  }
+  statement {
+    actions = ["secretsmanager:ListSecrets"]
+    resources = ["*"]
   }
 }
 

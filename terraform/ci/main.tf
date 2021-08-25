@@ -77,7 +77,11 @@ data "aws_iam_policy_document" "service_role_permissions_packer" {
       "ec2:DescribeTags",
       "ec2:RegisterImage",
       "ec2:RunInstances",
-      "ec2:GetPasswordData"
+      "ec2:GetPasswordData",
+      "ec2:CreateSecurityGroup",
+      "ec2:AuthorizeSecurityGroupIngress",
+      "ec2:DeleteSecurityGroup",
+      "ec2:DescribeSecurityGroups",
     ]
     resources = ["*"]
   }

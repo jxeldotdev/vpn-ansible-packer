@@ -14,6 +14,20 @@ source "amazon-ebs" "rhel8" {
   ssh_username  = "ec2-user"
   ami_name      = "packer-rhel8.4-pritunl-{{timestamp}}"
   encrypt_boot  = true
+
+  run_tags = {
+    Creator = "Packer"
+  }
+  run_volume_tags = {
+    Creator = "Packer"
+  }
+  snapshot_tags = {
+    Creator = "Packer"
+  }
+  tags = {
+    Creator = "Packer"
+  }
+
 }
 
 build {

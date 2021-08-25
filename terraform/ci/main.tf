@@ -49,11 +49,13 @@ data "aws_iam_policy_document" "service_role_permissions_secretsmanager" {
   }
 }
 
-// Taken from https://blog.stefan-koch.name/202/05/16/restricted-packer-aws-permissions
+// Taken from https://blog.stefan-koch.name/2021/05/16/restricted-packer-aws-permissions
 data "aws_iam_policy_document" "service_role_permissions_packer" {
   statement {
     sid = "RatherSafeActions"
     actions = [
+      "ec2:CreateKeypair",
+      "ec2:DeleteKeyPair",
       "ec2:CopyImage",
       "ec2:CreateImage",
       "ec2:CreateSnapshot",
@@ -126,6 +128,16 @@ resource "aws_iam_role" "service_role" {
   path               = "/"
   description        = var.svc_packer_role_name.description
   assume_role_policy = data.aws_iam_policy_document.assume_role_policy.json
+}
+
+resource "aws_iam_role_policy_attachment" "packer" {
+  role       = aws_iam_role.service_role.name
+  policy_arn = module.service_role_policy_packer.arn
+}
+
+resource "aws_iam_role_policy_attachment" "secrets_manager" {
+  role       = aws_iam_role.service_role.name
+  policy_arn = module.service_role_policy_secretsmanager.arn
 }
 
 module "service_user" {

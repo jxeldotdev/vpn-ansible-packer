@@ -69,3 +69,4 @@
     state: present
     secret_type: 'string'
     secret: "{{ default_pw }}"
+  delegate_to: 127.0.0.1

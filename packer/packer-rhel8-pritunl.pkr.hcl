@@ -27,7 +27,6 @@ source "amazon-ebs" "rhel8" {
   tags = {
     Creator = "Packer"
   }
-
 }
 
 build {

@@ -185,11 +185,11 @@ module "iam_group_with_policies" {
 
   name = var.service_group_name
 
-  group_users = module.service_user.iam_user_name
+  group_users = [module.service_user.iam_user_name]
 
   attach_iam_self_management_policy = false
 
-  custom_group_policy_arns = module.iam_policy_assume_role.arn
+  custom_group_policy_arns = [module.iam_policy_assume_role.arn]
 }
 
 module "iam_policy_assume_role" {

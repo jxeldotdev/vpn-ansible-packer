@@ -196,7 +196,7 @@ module "iam_policy_assume_role" {
   source = "terraform-aws-modules/iam/aws//modules/iam-policy"
   name        = var.service_group_name
   path        = "/"
-  policy = data.aws_iam_policy_document.assume_service_role
+  policy = data.aws_iam_policy_document.assume_service_role.json
 }
 
 data "aws_iam_policy_document" "assume_service_role" {

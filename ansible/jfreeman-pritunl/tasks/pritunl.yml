@@ -58,14 +58,15 @@
   ansible.builtin.shell:
     cmd: pritunl set app.server_port {{ pritunl_web_port }}
 
-- name: Print default-password
+- name: Save default pritunl password
   ansible.builtin.command: pritunl default-password
-  register: pw
+  register: default_pw
+  no_log: true
 
-  # This should be changed immediately when starting the instance.
-- name: Show password
-  ansible.builtin.debug:
-    msg: 
-      - "Default password for Pritunl Web UI - CHANGE THIS IMMEDIATELY ONCE STARTING THE INSTANCE"
-      - "{{ pw.stdout }}"
-      - "{{ pw.stderr }}"
+- name: Write default Pritunl password to 
+  community.aws.aws_secret:
+    name: 'pritunl_default_password_{{ inventory_hostname }}'
+    state: present
+    secret_type: 'string'
+    secret: "{{ default_pw }}"
+  delegate_to: 127.0.0.1

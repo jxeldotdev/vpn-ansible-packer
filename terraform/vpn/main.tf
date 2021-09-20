@@ -29,7 +29,7 @@ resource "aws_instance" "vpn" {
   ami = data.aws_ami.vpn_ami.id
 
   # REQUIRED FOR VPN TO WORK PROPERLY!
-  source_dest_check           = false
+  source_dest_check = false
 
   user_data                   = var.user_data
   instance_type               = var.instance_type

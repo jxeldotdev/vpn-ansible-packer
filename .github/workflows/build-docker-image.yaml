@@ -1,0 +1,84 @@
+name: Build Docker Image
+on:
+  push:
+    tags: v[1-9]+[0-9]+.[0-9]+
+    branches: '**'
+    paths:
+      - 'Dockerfile'
+jobs:
+  build-docker-image:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Cache docker layers
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os}}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      
+      - name: Calculate tags
+        if: ${{ startsWith(github.ref, 'refs/tags/v') }}
+        run: |
+          export GIT_TAG_NAME=$(echo "${GITHUB_REF}" | cut -d '/' -f 3)
+
+      - name: Create docker tag variable
+        id: tags
+        run: |
+          echo "::set-output name=branch_name::$(git branch --no-color --show-current)-$(git rev-parse --short HEAD)"
+      
+      - name: Build and push
+        uses: docker/build-push-action@v2
+        if: ${{ startsWith(github.ref, 'refs/heads/') }}
+        with:
+          context: .
+          push: true
+          tags: |
+            joelfreeman/ansible-packer-boto3:${{ steps.tags.outputs.branch_name }}
+            joelfreeman/ansible-packer-boto3:latest
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache-new
+
+
+      - name: Build and push (main)
+        uses: docker/build-push-action@v2
+        if: ${{ startsWith(github.ref, 'refs/heads/main') }}
+        with:
+          context: .
+          push: true
+          tags: |
+            joelfreeman/ansible-packer-boto3:latest, 
+            joelfreeman/ansible-packer-boto3:${{ env.GIT_TAG_NAME }}
+            joelfreeman/ansible-packer-boto3:stable
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache-new
+        
+        # Temp fix
+        # https://github.com/docker/build-push-action/issues/252
+        # https://github.com/moby/buildkit/issues/1896
+      - name: Move cache
+        run: |
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'docker.io/joelfreeman/ansible-packer-boto3:${{ env.GIT_TAG_NAME }}'
+          format: 'table'
+          exit-code: '1'
+          ignore-unfixed: true
+          vuln-type: 'os,library'
+          severity: 'CRITICAL,HIGH'

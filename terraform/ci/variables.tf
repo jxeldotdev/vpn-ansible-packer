@@ -53,3 +53,8 @@ variable "vault_pass_secret_value" {
   type      = string
   sensitive = true
 }
+
+variable "vpc_name" {
+  type    = string
+  default = "build-vpc"
+}

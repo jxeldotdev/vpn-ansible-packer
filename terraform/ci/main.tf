@@ -168,14 +168,52 @@ module "service_user" {
   force_destroy                 = true
 }
 
-// Group that allows users to Assume CI Role
-module "service_role_group" {
-  source = "terraform-aws-modules/iam/aws//modules/iam-group-with-assumable-roles-policy"
+# // Group that allows users to Assume CI Role
+# module "service_role_group" {
+#   source = "terraform-aws-modules/iam/aws//modules/iam-group-with-assumable-roles-policy"
 
-  name            = var.service_group_name
-  assumable_roles = [aws_iam_role.service_role.arn]
-  group_users     = [module.service_user.iam_user_name]
-  depends_on      = [module.service_user, aws_iam_role.service_role]
+#   name            = var.service_group_name
+#   assumable_roles = [aws_iam_role.service_role.arn]
+#   group_users     = [module.service_user.iam_user_name]
+#   depends_on      = [module.service_user, aws_iam_role.service_role]
+# }
+
+
+module "iam_group_with_policies" {
+  source  = "terraform-aws-modules/iam/aws//modules/iam-group-with-policies"
+  version = "~> 4.3"
+
+  name = var.service_group_name
+
+  group_users = module.service_user.iam_user_name
+
+  attach_iam_self_management_policy = false
+
+  custom_group_policy_arns = module.iam_policy_assume_role.arn
+  custom_group_policies = [
+    {
+      name   = "AllowS3Listing"
+      policy = data.aws_iam_policy_document.sample.json
+    }
+  ]
+}
+
+module "iam_policy_assume_role" {
+  source = "terraform-aws-modules/iam/aws//modules/iam-policy"
+  name        = var.service_group_name
+  path        = "/"
+  policy = data.aws_iam_policy_document.assume_service_role
+}
+
+data "aws_iam_policy_document" "assume_service_role" {
+  statement {
+    actions = [
+      "sts:AssumeRole",
+      "sts:TagSession"
+    ]
+
+    resources = [aws_iam_role.service_role.arn]
+  }
 }
 
 resource "aws_secretsmanager_secret" "ansible_vault_pass" {

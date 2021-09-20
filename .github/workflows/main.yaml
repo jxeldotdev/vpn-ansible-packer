@@ -14,6 +14,7 @@ jobs:
       - name: Fix Permission  
         run: |
           sudo chown -R ansible_user:ansible_user '/__w/vpn-ansible-packer/'
+          sudo chown -R ansible_user:ansible_user '/__w/'
       
       - name: Check out repository code
         uses: actions/checkout@v2

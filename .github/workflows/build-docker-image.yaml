@@ -42,7 +42,7 @@ jobs:
       
       - name: Build and push
         uses: docker/build-push-action@v2
-        if: ${{ startsWith(github.ref, 'refs/heads/') }}
+        if: ${{ startsWith(github.ref, 'refs/heads/') && ! startsWith(github.ref, 'refs/heads/master') }}
         with:
           context: .
           push: true
@@ -55,7 +55,7 @@ jobs:
 
       - name: Build and push (main)
         uses: docker/build-push-action@v2
-        if: ${{ startsWith(github.ref, 'refs/heads/master') }}
+        if: ${{ startsWith(github.ref, 'refs/heads/master')  }}
         with:
           context: .
           push: true

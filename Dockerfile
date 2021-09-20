@@ -1,6 +1,6 @@
 FROM python:3.9-buster AS base
 
-
+RUN apt update -y
 RUN apt install -y apt-transport-https
 RUN set -x \ 
     && apt install -y \
@@ -20,7 +20,7 @@ RUN set -x \
         procps \
         tar \
         wget \
-        zlib \
+        zlibc \
         curl \
         git \
         ;
@@ -32,6 +32,7 @@ RUN set -x \
 
 RUN set -x \
     && ./aws/install \
+    && /usr/local/bin/aws --version \
     && rm -rf "awscliv2.zip" \
     && rm -rf "./aws" \
     ;

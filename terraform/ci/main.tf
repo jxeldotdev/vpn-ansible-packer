@@ -1,5 +1,13 @@
 provider "aws" {}
 
+terraform {
+  required_providers {
+    aws = ">=3.40"
+    source  = "hashicorp/aws"
+  }
+}
+
+
 ######################################
 ## Role used by CI / GitHub Actions ##
 ######################################

@@ -51,6 +51,8 @@ RUN set -x \
     && pip install --user boto3 \
     ;
 
+# remove netbox collection, contains vulnerabilities and is unused.
+RUN rm -rf ~/.local/lib/python3.9/site-packages/ansible_collections/netbox/
 # Install Packer
 USER root
 

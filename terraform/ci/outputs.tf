@@ -20,7 +20,6 @@ output "vpc_id" {
 
 output "public_subnets" {
   value       = module.vpc.public_subnets
-  sensitive   = true
   description = "List of public subnets in VPC"
 }
 

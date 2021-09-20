@@ -2,9 +2,12 @@ variable "vault_pw_file_path" {
   type = string
 }
 
-
 variable "vault_path" {
   type = string
+}
+
+variable "ami_users" {
+  type = list(string)
 }
 
 source "amazon-ebs" "rhel8" {
@@ -14,6 +17,8 @@ source "amazon-ebs" "rhel8" {
   ssh_username  = "ec2-user"
   ami_name      = "packer-rhel8.4-pritunl-{{timestamp}}"
   encrypt_boot  = true
+
+  ami_users     = var.ami_users
 
   run_tags = {
     Creator = "Packer"

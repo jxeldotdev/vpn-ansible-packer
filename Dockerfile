@@ -51,7 +51,6 @@ RUN set -x \
     ;
 
 # Install Packer
-
 USER root
 
 RUN set -x \
@@ -63,5 +62,4 @@ RUN set -x \
     ;
 
 USER ansible_user
-
 ENTRYPOINT ["/bin/bash"]

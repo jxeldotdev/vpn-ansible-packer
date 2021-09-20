@@ -10,7 +10,6 @@ variable "service_user_name" {
   description = "Name of IAM user used in CI to assume packer iam role"
 }
 
-
 variable "svc_secretsmanager_policy_info" {
   type = object({
     description = string
@@ -43,10 +42,14 @@ variable "root_aws_account_id" {
   description = "Root AWS Account ID - This is included in the assume_role_policy document for IAM Role."
 }
 
-
 /* AWS Secrets Manager - Ansible Vault related variables */
 
 variable "vault_pass_secret_name" {
   type        = string
   description = "Name of AWS SecretsManager secret for Ansible Vault Password"
+}
+
+variable "vault_pass_secret_value" {
+  type        = string
+  sensitive   = true
 }

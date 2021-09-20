@@ -1,3 +1,5 @@
+provider "aws" {}
+
 ######################################
 ## Role used by CI / GitHub Actions ##
 ######################################
@@ -170,4 +172,9 @@ module "service_role_group" {
 
 resource "aws_secretsmanager_secret" "ansible_vault_pass" {
   name = var.vault_pass_secret_name
+}
+
+resource "aws_secretsmanager_secret_version" "ansible_vault_pass" {
+  secret_id     = aws_secretsmanager_secret.ansible_vault_pass.id
+  secret_string = var.vault_pass_secret_value
 }

@@ -23,6 +23,7 @@ RUN set -x \
         zlibc \
         curl \
         git \
+        sudo \
         ;
 
 RUN set -x \
@@ -55,6 +56,9 @@ RUN set -x \
 RUN rm -rf ~/.local/lib/python3.9/site-packages/ansible_collections/netbox/
 # Install Packer
 USER root
+
+# Setup passwordless sudo for GitHub Actions.
+RUN echo 'ansible_User ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers 
 
 RUN set -x \
     && curl "https://releases.hashicorp.com/packer/1.7.4/packer_1.7.4_linux_amd64.zip" -o "packer.zip" \

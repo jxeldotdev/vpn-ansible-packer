@@ -9,8 +9,12 @@ on:
 jobs:
   build-aws-ami:
     runs-on: ubuntu-latest
-    container: joelfreeman/ansible-packer-boto3:latest
+    container: joelfreeman/ansible-packer-boto3:stable
     steps:
+      - name: Fix Permission  
+        run: |
+          sudo chown -R ansible_user:ansible_user '/__w/vpn-ansible-packer/'
+      
       - name: Check out repository code
         uses: actions/checkout@v2
         with:

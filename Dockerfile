@@ -68,5 +68,6 @@ RUN set -x \
     && rm -vf packer.zip \
     ;
 
+
 USER ansible_user
 ENTRYPOINT ["/bin/bash"]

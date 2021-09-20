@@ -58,7 +58,7 @@ data "aws_iam_policy_document" "service_role_permissions_secretsmanager" {
     resources = [aws_secretsmanager_secret.ansible_vault_pass.arn]
   }
   statement {
-    actions = ["secretsmanager:ListSecrets"]
+    actions   = ["secretsmanager:ListSecrets"]
     resources = ["*"]
   }
 }

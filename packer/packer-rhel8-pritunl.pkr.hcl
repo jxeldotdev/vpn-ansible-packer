@@ -16,7 +16,6 @@ source "amazon-ebs" "rhel8" {
   instance_type = "t2.micro"
   ssh_username  = "ec2-user"
   ami_name      = "packer-rhel8.4-pritunl-{{timestamp}}"
-  encrypt_boot  = true
 
   ami_users     = var.ami_users
 

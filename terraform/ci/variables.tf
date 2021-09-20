@@ -50,6 +50,6 @@ variable "vault_pass_secret_name" {
 }
 
 variable "vault_pass_secret_value" {
-  type        = string
-  sensitive   = true
+  type      = string
+  sensitive = true
 }

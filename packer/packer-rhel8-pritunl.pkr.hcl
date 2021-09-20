@@ -10,17 +10,12 @@ variable "ami_users" {
   type = list(string)
 }
 
-variable "vpc_id" {
-  type = string
-}
-
 source "amazon-ebs" "rhel8" {
   source_ami    = "ami-01ae9b7a0d2d87a64"
   region        = "ap-southeast-2"
   instance_type = "t2.micro"
   ssh_username  = "ec2-user"
   ami_name      = "packer-rhel8.4-pritunl-{{timestamp}}"
-  vpc_id        = var.vpc_id
 
   subnet_filter {
     filters = {

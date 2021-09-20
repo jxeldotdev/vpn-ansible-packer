@@ -5,6 +5,7 @@ on:
     branches: '**'
     paths:
       - 'Dockerfile'
+      - '.github/workflows/build-docker-image.yaml'
 jobs:
   build-docker-image:
     runs-on: ubuntu-latest
@@ -60,7 +61,7 @@ jobs:
           push: true
           tags: |
             joelfreeman/ansible-packer-boto3:latest, 
-            joelfreeman/ansible-packer-boto3:${{ env.GIT_TAG_NAME }},
+            joelfreeman/ansible-packer-boto3:${{ steps.tags.outputs.branch_name }},
             joelfreeman/ansible-packer-boto3:stable
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new
@@ -76,7 +77,7 @@ jobs:
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: 'docker.io/joelfreeman/ansible-packer-boto3:${{ env.GIT_TAG_NAME }}'
+          image-ref: 'docker.io/joelfreeman/ansible-packer-boto3:${{ steps.tags.outputs.branch_name }}'
           format: 'table'
           exit-code: '1'
           ignore-unfixed: true

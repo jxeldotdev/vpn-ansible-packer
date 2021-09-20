@@ -60,7 +60,7 @@ jobs:
           push: true
           tags: |
             joelfreeman/ansible-packer-boto3:latest, 
-            joelfreeman/ansible-packer-boto3:${{ env.GIT_TAG_NAME }}
+            joelfreeman/ansible-packer-boto3:${{ env.GIT_TAG_NAME }},
             joelfreeman/ansible-packer-boto3:stable
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new

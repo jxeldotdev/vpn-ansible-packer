@@ -2,14 +2,14 @@ name: Build AWS AMI
 on: 
   push:
     branches:
-      - main
+      - master
   pull_request:
     branches:
-      - main
+      - master
 jobs:
   build-aws-ami:
     runs-on: ubuntu-latest
-    container: joelfreeman/ansible-packer-boto3:stable
+    container: joelfreeman/ansible-packer-boto3:latest
     steps:
       - name: Check out repository code
         uses: actions/checkout@v2
@@ -26,6 +26,6 @@ jobs:
           packer build \ 
           -var vault_pw_file="scripts/get_vault_pw.py" \
           -var vault_path="ansible/vault.yml" \
-          -var ami_users="${{ secrets.PROD_AWS_ACCOUNT_ID }}"
+          -var ami_users='["${{ secrets.PROD_AWS_ACCOUNT_ID }}"]'
           packer/packer-rhel8-pritunl.pkr.hcl
 

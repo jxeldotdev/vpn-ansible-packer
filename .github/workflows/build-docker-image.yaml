@@ -54,7 +54,7 @@ jobs:
 
       - name: Build and push (main)
         uses: docker/build-push-action@v2
-        if: ${{ startsWith(github.ref, 'refs/heads/main') }}
+        if: ${{ startsWith(github.ref, 'refs/heads/master') }}
         with:
           context: .
           push: true

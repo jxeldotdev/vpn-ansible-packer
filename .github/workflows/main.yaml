@@ -9,7 +9,8 @@ on:
 jobs:
   build-aws-ami:
     runs-on: ubuntu-latest
-    container: joelfreeman/ansible-packer-boto3:stable
+    container: 
+      image: joelfreeman/ansible-packer-boto3:stable
       options: --user root
     steps:      
       - name: Check out repository code

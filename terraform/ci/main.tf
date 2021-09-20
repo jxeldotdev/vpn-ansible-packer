@@ -190,12 +190,6 @@ module "iam_group_with_policies" {
   attach_iam_self_management_policy = false
 
   custom_group_policy_arns = module.iam_policy_assume_role.arn
-  custom_group_policies = [
-    {
-      name   = "AllowS3Listing"
-      policy = data.aws_iam_policy_document.sample.json
-    }
-  ]
 }
 
 module "iam_policy_assume_role" {

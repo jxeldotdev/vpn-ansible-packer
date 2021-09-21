@@ -23,7 +23,7 @@ data "aws_iam_policy_document" "assume_role_policy" {
       type = "AWS"
       identifiers = [
         "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root",
-        "arn:aws:iam::${data.aws_caller_identity.current.account_id}:${var.svc_packer_role_name}"
+        "arn:aws:iam::${data.aws_caller_identity.current.account_id}:${var.svc_packer_role_name.name}"
       ]
     }
   }
@@ -36,7 +36,7 @@ data "aws_iam_policy_document" "assume_role_policy" {
       type = "AWS"
       identifiers = [
         "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root",
-        "arn:aws:iam::${data.aws_caller_identity.current.account_id}:${var.svc_packer_role_name}"
+        "arn:aws:iam::${data.aws_caller_identity.current.account_id}:${var.svc_packer_role_name.name}"
       ]
     }
 

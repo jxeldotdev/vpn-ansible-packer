@@ -27,16 +27,12 @@ jobs:
           role-duration-seconds: 1200
           aws-region: ap-southeast-2
       
-      - name: list files
-        run: |
-          find .
-          exit 255
 
       - name: Build AWS AMI for Pritunl VM Image
         run: |
           packer build \ 
-          -var vault_pw_file="scripts/get_vault_pw.py" \
-          -var vault_path="ansible/vault.yml" \
+          -var vault_pw_file="./scripts/get_vault_pw.py" \
+          -var vault_path="./ansible/vault.yml" \
           -var ami_users='["${{ secrets.PROD_AWS_ACCOUNT_ID }}"]' \
-          packer/packer-rhel8-pritunl.pkr.hcl
+          ./packer/packer-rhel8-pritunl.pkr.hcl
 

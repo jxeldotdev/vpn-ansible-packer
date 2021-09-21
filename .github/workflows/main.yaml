@@ -32,6 +32,6 @@ jobs:
           packer build \ 
           -var vault_pw_file="scripts/get_vault_pw.py" \
           -var vault_path="ansible/vault.yml" \
-          -var ami_users='["${{ secrets.PROD_AWS_ACCOUNT_ID }}"]'
+          -var ami_users='["${{ secrets.PROD_AWS_ACCOUNT_ID }}"]' \
           packer/packer-rhel8-pritunl.pkr.hcl
 

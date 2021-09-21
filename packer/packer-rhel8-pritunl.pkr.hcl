@@ -7,7 +7,7 @@ variable "vault_path" {
 }
 
 variable "ami_users" {
-  type = list(string)
+  type = list(number)
 }
 
 source "amazon-ebs" "rhel8" {

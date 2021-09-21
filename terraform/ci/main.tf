@@ -22,7 +22,7 @@ data "aws_iam_policy_document" "assume_role_policy" {
     principals {
       type = "AWS"
       identifiers = [
-        "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"
+        "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root",
         "arn:aws:iam::${data.aws_caller_identity.current.account_id}:${var.svc_packer_role_name}"
       ]
     }
@@ -35,11 +35,11 @@ data "aws_iam_policy_document" "assume_role_policy" {
     principals {
       type = "AWS"
       identifiers = [
-        "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"
+        "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root",
         "arn:aws:iam::${data.aws_caller_identity.current.account_id}:${var.svc_packer_role_name}"
       ]
     }
-    
+
   }
   // Allow users in management acount to assume this role.
   statement {
@@ -210,8 +210,8 @@ module "iam_group_with_policies" {
 
 module "iam_policy_assume_role" {
   source = "terraform-aws-modules/iam/aws//modules/iam-policy"
-  name        = var.service_group_name
-  path        = "/"
+  name   = var.service_group_name
+  path   = "/"
   policy = data.aws_iam_policy_document.assume_service_role.json
 }
 

@@ -16,16 +16,32 @@ data "aws_caller_identity" "current" {}
 
 data "aws_iam_policy_document" "assume_role_policy" {
   statement {
+    sid     = "AllowAssumeRole"
     actions = ["sts:AssumeRole"]
 
     principals {
       type = "AWS"
       identifiers = [
-        "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"
+        "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root",
+        module.service_user.iam_user_arn
       ]
     }
   }
-  // Allow users in root acount to assume this role.
+  // Required for GitHub actions to assume role :)))
+  statement {
+    sid     = "AllowPassSessionTags"
+    actions = ["sts:TagSession"]
+
+    principals {
+      type = "AWS"
+      identifiers = [
+        "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root",
+        module.service_user.iam_user_arn   
+      ]
+    }
+
+  }
+  // Allow users in management acount to assume this role.
   statement {
     actions = ["sts:AssumeRole"]
     principals {
@@ -168,14 +184,45 @@ module "service_user" {
   force_destroy                 = true
 }
 
-// Group that allows users to Assume CI Role
-module "service_role_group" {
-  source = "terraform-aws-modules/iam/aws//modules/iam-group-with-assumable-roles-policy"
+# // Group that allows users to Assume CI Role
+# module "service_role_group" {
+#   source = "terraform-aws-modules/iam/aws//modules/iam-group-with-assumable-roles-policy"
 
-  name            = var.service_group_name
-  assumable_roles = [aws_iam_role.service_role.arn]
-  group_users     = [module.service_user.iam_user_name]
-  depends_on      = [module.service_user, aws_iam_role.service_role]
+#   name            = var.service_group_name
+#   assumable_roles = [aws_iam_role.service_role.arn]
+#   group_users     = [module.service_user.iam_user_name]
+#   depends_on      = [module.service_user, aws_iam_role.service_role]
+# }
+
+
+module "iam_group_with_policies" {
+  source  = "terraform-aws-modules/iam/aws//modules/iam-group-with-policies"
+  version = "~> 4.3"
+
+  name = var.service_group_name
+
+  group_users = [module.service_user.iam_user_name]
+
+  attach_iam_self_management_policy = false
+
+  custom_group_policy_arns = [module.iam_policy_assume_role.arn]
+}
+
+module "iam_policy_assume_role" {
+  source = "terraform-aws-modules/iam/aws//modules/iam-policy"
+  name   = var.service_group_name
+  path   = "/"
+  policy = data.aws_iam_policy_document.assume_service_role.json
+}
+
+data "aws_iam_policy_document" "assume_service_role" {
+  statement {
+    actions = [
+      "sts:AssumeRole",
+      "sts:TagSession"
+    ]
+    resources = [aws_iam_role.service_role.arn]
+  }
 }
 
 resource "aws_secretsmanager_secret" "ansible_vault_pass" {

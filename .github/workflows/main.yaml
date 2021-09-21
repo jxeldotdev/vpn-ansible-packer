@@ -12,12 +12,16 @@ jobs:
     steps:      
       - name: Check out repository code
         uses: actions/checkout@v2
+      
       - uses: actions/setup-python@v2
         with:
           python-version: '3.8'
+        
       - name: Install Ansible
         run: pip install ansible
+
       - name: Install boto3
+        run: pip install boto3
         
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -34,8 +38,8 @@ jobs:
           command: validate
           arguments: -syntax-only
           target: ./packer/packer-rhel8-pritunl.pkr.hcl
+
       - name: Build Artifact
-      
         uses: hashicorp/packer-github-actions@master
         with:
           command: build

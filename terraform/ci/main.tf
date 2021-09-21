@@ -108,6 +108,7 @@ data "aws_iam_policy_document" "service_role_permissions_packer" {
       "ec2:AuthorizeSecurityGroupIngress",
       "ec2:DeleteSecurityGroup",
       "ec2:DescribeSecurityGroups",
+      "ec2:DescribeVpcs"
     ]
     resources = ["*"]
   }

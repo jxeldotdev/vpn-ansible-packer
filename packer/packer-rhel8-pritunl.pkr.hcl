@@ -10,6 +10,10 @@ variable "ami_users" {
   type = list(number)
 }
 
+variable "subnet_id" {
+  type = string
+}
+
 source "amazon-ebs" "rhel8" {
   source_ami    = "ami-01ae9b7a0d2d87a64"
   region        = "ap-southeast-2"
@@ -19,10 +23,9 @@ source "amazon-ebs" "rhel8" {
 
   subnet_filter {
     filters = {
-      "tag:Environment": "Build"
+      "tag:Environment": "Build" 
     }
-    most_free = true
-    random    = true
+    subnet_id = var.subnet_id
   }
 
   vpc_filter {

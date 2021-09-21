@@ -38,14 +38,6 @@ RUN set -x \
     && rm -rf "./aws" \
     ;
 
-RUN set -x \
-    && useradd -ms /bin/bash ansible_user
-
-USER ansible_user
-WORKDIR /home/ansible_user
-
-FROM base AS ansible
-
 RUN set -x \ 
     && pip install --upgrade pip \
     && pip install --user ansible \
@@ -54,11 +46,6 @@ RUN set -x \
 
 # remove netbox collection, contains vulnerabilities and is unused.
 RUN rm -rf ~/.local/lib/python3.9/site-packages/ansible_collections/netbox/
-# Install Packer
-USER root
-
-# Setup passwordless sudo for GitHub Actions.
-RUN echo 'ansible_User ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers 
 
 RUN set -x \
     && curl "https://releases.hashicorp.com/packer/1.7.4/packer_1.7.4_linux_amd64.zip" -o "packer.zip" \
@@ -68,6 +55,4 @@ RUN set -x \
     && rm -vf packer.zip \
     ;
 
-
-USER ansible_user
 ENTRYPOINT ["/bin/bash"]

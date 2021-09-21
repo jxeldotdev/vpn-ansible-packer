@@ -29,6 +29,8 @@ jobs:
 
       - name: Build AWS AMI for Pritunl VM Image
         run: |
+          echo $PATH
+          which packer
           packer build \ 
           -var "vault_pw_file_path=./scripts/get_vault_pw.py" \
           -var "vault_path="./ansible/vault.yml" \

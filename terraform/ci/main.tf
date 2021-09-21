@@ -16,16 +16,32 @@ data "aws_caller_identity" "current" {}
 
 data "aws_iam_policy_document" "assume_role_policy" {
   statement {
+    sid     = "AllowAssumeRole"
     actions = ["sts:AssumeRole"]
 
     principals {
       type = "AWS"
       identifiers = [
         "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"
+        "arn:aws:iam::${data.aws_caller_identity.current.account_id}:${var.svc_packer_role_name}"
       ]
     }
   }
-  // Allow users in root acount to assume this role.
+  // Required for GitHub actions to assume role :)))
+  statement {
+    sid     = "AllowPassSessionTags"
+    actions = ["sts:TagSession"]
+
+    principals {
+      type = "AWS"
+      identifiers = [
+        "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"
+        "arn:aws:iam::${data.aws_caller_identity.current.account_id}:${var.svc_packer_role_name}"
+      ]
+    }
+    
+  }
+  // Allow users in management acount to assume this role.
   statement {
     actions = ["sts:AssumeRole"]
     principals {
@@ -205,7 +221,6 @@ data "aws_iam_policy_document" "assume_service_role" {
       "sts:AssumeRole",
       "sts:TagSession"
     ]
-
     resources = [aws_iam_role.service_role.arn]
   }
 }

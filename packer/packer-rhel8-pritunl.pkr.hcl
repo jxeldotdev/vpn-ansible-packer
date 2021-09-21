@@ -21,6 +21,8 @@ source "amazon-ebs" "rhel8" {
     filters = {
       "tag:Environment": "Build"
     }
+    most_free = true
+    random    = true
   }
 
   vpc_filter {

@@ -40,8 +40,8 @@ RUN set -x \
 
 RUN set -x \ 
     && pip install --upgrade pip \
-    && pip install --user ansible \
-    && pip install --user boto3 \
+    && pip install ansible \
+    && pip install boto3 \
     ;
 
 # remove netbox collection, contains vulnerabilities and is unused.

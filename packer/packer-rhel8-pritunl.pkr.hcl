@@ -25,8 +25,9 @@ source "amazon-ebs" "rhel8" {
     filters = {
       "tag:Environment": "Build" 
     }
-    subnet_id = var.subnet_id
   }
+
+  subnet_id = var.subnet_id
 
   vpc_filter {
     filters = {

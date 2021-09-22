@@ -34,9 +34,7 @@ source "amazon-ebs" "rhel8" {
       "tag:Environment": "Build"
     }
   }
-
-  ami_users     = var.ami_users
-
+  
   run_tags = {
     Creator = "Packer"
   }

@@ -15,5 +15,4 @@
     configure_mongodb_backups: no
     ansible_become_password: "{{ vault_ansible_user_password }}"
   roles:
-    - './jfreeman-secure/'
-    - './jfreeman-pritunl/'
+    - role: './jfreeman-pritunl/'

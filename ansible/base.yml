@@ -13,4 +13,5 @@
     ansible_user_name: jfreeman
     setup_automatic_updates: yes
   roles:
-    - './jfreeman-secure/'
+    - role: './jfreeman-secure/'
+      

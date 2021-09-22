@@ -87,10 +87,10 @@ data "aws_iam_policy_document" "service_role_permissions_secretsmanager" {
       "secretsmanager:ListSecretVersionIds",
       "secretsManager:PutSecretValue",
       "secretsManager:CreateSecret",
-      "secretsManager:updateSeUpdateSecret"
+      "secretsManager:UpdateSecret"
     ]
     resources = [
-      "arn:aws:secretsmanager:ap-southeast-2:${data.aws_caller_identity.current.account_id}:secret:*pritunl*"
+      "arn:aws:secretsmanager:ap-southeast-2:${data.aws_caller_identity.current.account_id}:secret:pritunl*"
     ]
   }
 }

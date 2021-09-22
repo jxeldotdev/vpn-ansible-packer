@@ -11,10 +11,8 @@
     github_keys: https://github.com/jxeldotdev.keys
     ansible_user_name: jfreeman
     setup_automatic_updates: yes
+    setup_firewalld: no
+    configure_mongodb_backups: no
+    ansible_become_password: "{{ vault_ansible_user_password }}"
   roles:
-    - role: './jfreeman-secure/'
     - role: './jfreeman-pritunl/'
-      setup_firewalld: no
-      configure_mongodb_backups: no
-      ansible_become_password: "{{ vault_ansible_user_password }}"
-

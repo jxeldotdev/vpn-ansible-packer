@@ -71,11 +71,26 @@ data "aws_iam_policy_document" "service_role_permissions_secretsmanager" {
       "secretsmanager:DescribeSecret",
       "secretsmanager:ListSecretVersionIds"
     ]
-    resources = [aws_secretsmanager_secret.ansible_vault_pass.arn]
+    resources = [
+      aws_secretsmanager_secret.ansible_vault_pass.arn,
+      ]
   }
   statement {
     actions   = ["secretsmanager:ListSecrets"]
     resources = ["*"]
+  }
+  statement {
+    actions = [
+      "secretsmanager:GetResourcePolicy",
+      "secretsmanager:GetSecretValue",
+      "secretsmanager:DescribeSecret",
+      "secretsmanager:ListSecretVersionIds",
+      "secretsManager:PutSecretValue",
+      "secretsManager:CreateSecret"
+    ]
+    resources = [
+      "arn:aws:secretsmanager:ap-southeast-2:${data.aws_caller_identity.current.account_id}:secret:pritunl_default_password*"
+    ]
   }
 }
 

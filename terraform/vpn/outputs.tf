@@ -1,13 +1,13 @@
 output "instance_id" {
-  value = module.vpn_instance.id
+  value = aws_instance.vpn.id
 }
 
 output "private_ip" {
-  value = module.vpn_instance.private_ip
+  value = aws_instance.vpn.private_ip
 }
 
 output "public_ip" {
-  value = module.vpn_instance.public_ip
+  value = aws_instance.vpn.public_ip
 }
 
 output "security_group_id" {

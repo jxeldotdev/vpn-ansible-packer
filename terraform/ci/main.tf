@@ -36,7 +36,7 @@ data "aws_iam_policy_document" "assume_role_policy" {
       type = "AWS"
       identifiers = [
         "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root",
-        module.service_user.iam_user_arn   
+        module.service_user.iam_user_arn
       ]
     }
 
@@ -73,7 +73,7 @@ data "aws_iam_policy_document" "service_role_permissions_secretsmanager" {
     ]
     resources = [
       aws_secretsmanager_secret.ansible_vault_pass.arn,
-      ]
+    ]
   }
   statement {
     actions   = ["secretsmanager:ListSecrets"]
@@ -86,10 +86,11 @@ data "aws_iam_policy_document" "service_role_permissions_secretsmanager" {
       "secretsmanager:DescribeSecret",
       "secretsmanager:ListSecretVersionIds",
       "secretsManager:PutSecretValue",
-      "secretsManager:CreateSecret"
+      "secretsManager:CreateSecret",
+      "secretsManager:updateSeUpdateSecret"
     ]
     resources = [
-      "arn:aws:secretsmanager:ap-southeast-2:${data.aws_caller_identity.current.account_id}:secret:pritunl_default_password*"
+      "arn:aws:secretsmanager:ap-southeast-2:${data.aws_caller_identity.current.account_id}:secret:*pritunl*"
     ]
   }
 }
@@ -149,6 +150,7 @@ data "aws_iam_policy_document" "service_role_permissions_packer" {
     }
   }
 }
+
 
 // IAM policy that grants permissions to access SecretsManager
 module "service_role_policy_secretsmanager" {

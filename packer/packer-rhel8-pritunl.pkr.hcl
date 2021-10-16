@@ -63,5 +63,28 @@ build {
     extra_arguments = [ "--vault-password-file=${var.vault_pw_file_path}", "-e @${var.vault_path}" ]
     ansible_env_vars = ["ANSIBLE_SSH_TRANSFER_METHOD=scp"]
   }
-  
+  run_tags = {
+    Creator    = "Packer"
+    App        = "Pritunl"
+    Commit     = ${var.git_ref}
+    Repository = "jxeldotdev/vpn-ansible-packer"
+  }
+  run_volume_tags = {
+    Creator    = "Packer"
+    App        = "Pritunl"
+    Commit     = ${var.git_ref}
+    Repository = "jxeldotdev/vpn-ansible-packer"
+  }
+  snapshot_tags = {
+    Creator    = "Packer"
+    App        = "Pritunl"
+    Commit     = ${var.git_ref}
+    Repository = "jxeldotdev/vpn-ansible-packer"
+  }
+  tags = {
+    Creator    = "Packer"
+    App        = "Pritunl"
+    Commit     = ${var.git_ref}
+    Repository = "jxeldotdev/vpn-ansible-packer"
+  }
 }

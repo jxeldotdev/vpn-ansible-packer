@@ -117,6 +117,10 @@ data "aws_iam_policy_document" "service_role_permissions_packer" {
       "ec2:DescribeSubnets",
       "ec2:DescribeVolumes",
       "ec2:DescribeTags",
+      "ec2:DeregisterImage",
+      "ec2:ModifyImageAttribute",
+      "ec2:ModifyInstanceAttribute",
+      "ec2:ModifySnapshotAttribute",
       "ec2:RegisterImage",
       "ec2:RunInstances",
       "ec2:GetPasswordData",
@@ -124,7 +128,8 @@ data "aws_iam_policy_document" "service_role_permissions_packer" {
       "ec2:AuthorizeSecurityGroupIngress",
       "ec2:DeleteSecurityGroup",
       "ec2:DescribeSecurityGroups",
-      "ec2:DescribeVpcs"
+      "ec2:DescribeVpcs",
+      "ec2:ModifyImageAttribute",
     ]
     resources = ["*"]
   }
@@ -136,9 +141,6 @@ data "aws_iam_policy_document" "service_role_permissions_packer" {
       "ec2:DeleteVolume",
       "ec2:DeregisterImage",
       "ec2:DetachVolume",
-      "ec2:ModifyImageAttribute",
-      "ec2:ModifyInstanceAttribute",
-      "ec2:ModifySnapshotAttribute",
       "ec2:StopInstances",
       "ec2:TerminateInstances"
     ]

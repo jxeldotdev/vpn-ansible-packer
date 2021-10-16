@@ -7,10 +7,14 @@ variable "vault_path" {
 }
 
 variable "ami_users" {
-  type = list(number)
+  type = list(string)
 }
 
 variable "subnet_id" {
+  type = string
+}
+
+variable "git_ref" {
   type = string
 }
 
@@ -19,7 +23,8 @@ source "amazon-ebs" "rhel8" {
   region        = "ap-southeast-2"
   instance_type = "t2.micro"
   ssh_username  = "ec2-user"
-  ami_name      = "packer-rhel8.4-pritunl-{{timestamp}}"
+  ami_name      = "packer-rhel8.4-pritunl-${var.git_ref}-{{timestamp}}"
+  ami_users     = var.ami_users
 
   subnet_filter {
     filters = {

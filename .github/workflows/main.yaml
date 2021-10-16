@@ -31,6 +31,7 @@ jobs:
         env:
           VAULT_AWS_SECRET_NAME: ${{ secrets.VAULT_AWS_SECRET_NAME }}
         run: |
-          packer build -var "subnet_id=${{ secrets.PACKER_SUBNET_ID }}" -var "vault_pw_file_path=./scripts/get_vault_pw.py" -var "vault_path=./ansible/vault.yml" -var 'ami_users=[${{ secrets.PROD_AWS_ACCOUNT_ID }}]' ./packer/packer-rhel8-pritunl.pkr.hcl
+          GIT_REF=git rev-parse --short HEAD
+          packer build -var "git_ref=${GIT_REF}" -var "subnet_id=${{ secrets.PACKER_SUBNET_ID }}" -var "vault_pw_file_path=./scripts/get_vault_pw.py" -var "vault_path=./ansible/vault.yml" -var 'ami_users=[${{ secrets.AMI_ACCOUNTS }}]' ./packer/packer-rhel8-pritunl.pkr.hcl
         shell: bash
 

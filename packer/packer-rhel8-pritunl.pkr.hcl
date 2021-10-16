@@ -47,10 +47,17 @@ source "amazon-ebs" "rhel8" {
     Creator = "Packer"
   }
   snapshot_tags = {
-    Creator = "Packer"
+    Creator    = "Packer"
+    App        = "Pritunl"
+    Commit     = var.git_ref
+    Repository = "jxeldotdev/vpn-ansible-packer"
   }
+  
   tags = {
-    Creator = "Packer"
+    Creator    = "Packer"
+    App        = "Pritunl"
+    Commit     = var.git_ref
+    Repository = "jxeldotdev/vpn-ansible-packer"
   }
 }
 
@@ -62,18 +69,5 @@ build {
     user          = "ec2-user"
     extra_arguments = [ "--vault-password-file=${var.vault_pw_file_path}", "-e @${var.vault_path}" ]
     ansible_env_vars = ["ANSIBLE_SSH_TRANSFER_METHOD=scp"]
-  }
-
-  snapshot_tags = {
-    Creator    = "Packer"
-    App        = "Pritunl"
-    Commit     = var.git_ref
-    Repository = "jxeldotdev/vpn-ansible-packer"
-  }
-  tags = {
-    Creator    = "Packer"
-    App        = "Pritunl"
-    Commit     = var.git_ref
-    Repository = "jxeldotdev/vpn-ansible-packer"
   }
 }

@@ -66,25 +66,25 @@ build {
   run_tags = {
     Creator    = "Packer"
     App        = "Pritunl"
-    Commit     = ${var.git_ref}
+    Commit     = var.git_ref
     Repository = "jxeldotdev/vpn-ansible-packer"
   }
   run_volume_tags = {
     Creator    = "Packer"
     App        = "Pritunl"
-    Commit     = ${var.git_ref}
+    Commit     = var.git_ref
     Repository = "jxeldotdev/vpn-ansible-packer"
   }
   snapshot_tags = {
     Creator    = "Packer"
     App        = "Pritunl"
-    Commit     = ${var.git_ref}
+    Commit     = var.git_ref
     Repository = "jxeldotdev/vpn-ansible-packer"
   }
   tags = {
     Creator    = "Packer"
     App        = "Pritunl"
-    Commit     = ${var.git_ref}
+    Commit     = var.git_ref
     Repository = "jxeldotdev/vpn-ansible-packer"
   }
 }

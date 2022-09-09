@@ -1,6 +1,6 @@
 ---
-- name: Secure
-  import_playbook: base.yml
+# - name: Secure
+#   import_playbook: base.yml
 
 - name: Install Pritunl
   import_playbook: pritunl.yml

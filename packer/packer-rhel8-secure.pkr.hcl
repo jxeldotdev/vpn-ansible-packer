@@ -7,7 +7,7 @@ variable "vault_path" {
 }
 
 source "amazon-ebs" "rhel8" {
-  source_ami    = "ami-01ae9b7a0d2d87a64"
+  source_ami    = "ami-0a443decce6d88dc2"
   region        = "ap-southeast-2"
   instance_type = "t2.micro"
   ssh_username  = "ec2-user"

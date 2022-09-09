@@ -13,6 +13,24 @@ source "amazon-ebs" "rhel8" {
   ssh_username  = "ec2-user"
   ami_name      = "packer-rhel8.4-base-{{timestamp}}"
   encrypt_boot  = true
+
+  run_tags = {
+    Creator = "Packer"
+  }
+  run_volume_tags = {
+    Creator = "Packer"
+  }
+  snapshot_tags = {
+    Creator    = "Packer"
+    App        = "BaseImage"
+    Repository = "jxeldotdev/vpn-ansible-packer"
+  }
+  
+  tags = {
+    Creator    = "Packer"
+    App        = "BaseImage"
+    Repository = "jxeldotdev/vpn-ansible-packer"
+  }
 }
 
 build {

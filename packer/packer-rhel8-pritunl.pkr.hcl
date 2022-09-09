@@ -19,7 +19,7 @@ variable "git_ref" {
 }
 
 source "amazon-ebs" "rhel8" {
-  source_ami    = "ami-050625d0ff8cea3f3"
+  source_ami    = "ami-0f25bb0e45a988858"
   region        = "ap-southeast-2"
   instance_type = "t2.micro"
   ssh_username  = "ec2-user"

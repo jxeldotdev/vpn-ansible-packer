@@ -12,6 +12,7 @@
     github_keys: https://github.com/jxeldotdev.keys
     ansible_user_name: jfreeman
     setup_automatic_updates: yes
+    activate_rhel: false
   roles:
     - role: './jfreeman-secure/'
       

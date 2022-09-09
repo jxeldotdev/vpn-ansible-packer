@@ -27,10 +27,14 @@
         path: /etc/yum.repos.d/ol7-temp.repo
         state: absent
 
+    - name: Update Packages
+      ansible.builtin.package:
+        name: '*'
+        state: latest
+
 - name: Install pritunl
-  ansible.builtin.yum:
-    name: 
-      - pritunl
+  ansible.builtin.dnf:
+    name: pritunl
     state: present
 
 - name: Enable and start service

@@ -26,19 +26,10 @@ source "amazon-ebs" "rhel8" {
   ami_name      = "packer-rhel8.4-pritunl-${var.git_ref}-{{timestamp}}"
   ami_users     = var.ami_users
 
-  subnet_filter {
-    filters = {
-      "tag:Environment": "Build" 
-    }
-  }
+
 
   subnet_id = var.subnet_id
-
-  vpc_filter {
-    filters = {
-      "tag:Environment": "Build"
-    }
-  }
+  vpc_id = "vpc-0e409d0ead084bf80"
   
   run_tags = {
     Creator = "Packer"

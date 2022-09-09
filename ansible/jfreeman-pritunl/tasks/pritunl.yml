@@ -31,7 +31,6 @@
   ansible.builtin.yum:
     name: 
       - pritunl
-      - https://yum.oracle.com/repo/OracleLinux/OL7/developer_EPEL/x86_64/getPackage/openvpn-2.4.10-1.el7.x86_64.rpm
     state: present
 
 - name: Enable and start service

@@ -1,4 +1,4 @@
-FROM python:3.9-buster AS base
+FROM python:3.11-buster AS base
 
 RUN apt update -y
 RUN apt install -y apt-transport-https
@@ -45,10 +45,10 @@ RUN set -x \
     ;
 
 # remove netbox collection, contains vulnerabilities and is unused.
-RUN rm -rf ~/.local/lib/python3.9/site-packages/ansible_collections/netbox/
+RUN rm -rf ~/.local/lib/python3.11/site-packages/ansible_collections/netbox/
 
 RUN set -x \
-    && curl "https://releases.hashicorp.com/packer/1.7.4/packer_1.7.4_linux_amd64.zip" -o "packer.zip" \
+    && curl "https://releases.hashicorp.com/packer/1.8.6/packer_1.8.6_linux_amd64.zip" -o "packer.zip" \
     && unzip packer.zip \
     && chmod +x packer \
     && mv packer /usr/local/bin \

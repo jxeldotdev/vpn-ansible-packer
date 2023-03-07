@@ -29,6 +29,7 @@ RUN set -x \
         curl \
         git \
         sudo \
+        jq \
         ;
 
 RUN set -x \

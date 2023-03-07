@@ -1,5 +1,10 @@
 FROM python:3.11-buster AS base
 
+RUN set -x \
+    && apt-mark hold git \
+    && apt-mark hold git-man \
+    ; 
+
 RUN apt update -y
 RUN apt install -y apt-transport-https
 RUN set -x \ 

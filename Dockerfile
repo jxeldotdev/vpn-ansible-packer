@@ -52,6 +52,7 @@ RUN set -x \
     && pip install --upgrade pip \
     && pip install ansible \
     && pip install boto3 \
+    && pip install ansible-lint \
     ;
 
 # remove netbox collection, contains vulnerabilities and is unused.
